@@ -9,22 +9,38 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: HomeScreen(),
+      theme: ThemeData(
+        brightness: Brightness.dark, // Set the overall brightness to dark
+        primaryColor: const Color.fromRGBO(20, 20, 20, 1),  // Set primary color to black
+        scaffoldBackgroundColor: Colors.black, // Set background to black
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color.fromARGB(255, 15, 15, 15), // Navbar background color
+          foregroundColor: Colors.white, // Navbar text/icon color
+        ),
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Color.fromARGB(255, 15, 15, 15), // Dark background for Bottom Nav Bar
+          selectedItemColor: Colors.white, // Color for selected item (white)
+          unselectedItemColor: Colors.white54 // Color for unselected items (faded white)
+        ),
+      ),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  String pageTitle = "";
+  late Widget pageTitle;
 
   final List<Widget> _pages = [
     BuyPage(),
@@ -33,12 +49,19 @@ class _HomeScreenState extends State<HomeScreen> {
     ProfilePage()
   ];
 
-  final List<String> pagesTitle = [
-    "UniTrade 🔵 BUY",
-    "UniTrade 🔵 SELL",
-    "Notifications",
-    "Profile"
+  final List<Widget> pagesTitle = [
+    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("Buy", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
+    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("Sell", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
+    const Text("Notifications", style: TextStyle( fontWeight: FontWeight.w900 ),),
+    const Text("Profile", style: TextStyle( fontWeight: FontWeight.w900 ),),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    print("Init State");
+    pageTitle = pagesTitle[_currentIndex];
+  }
 
   void onTabTapped(int index) {
     setState(() {
@@ -51,37 +74,42 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          pageTitle,
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+        title: pageTitle
       ),
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: onTabTapped,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Buy',
+      bottomNavigationBar: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            height: 1,
+            color: const Color.fromRGBO(122, 122, 122, .5),
+            margin: const EdgeInsets.only(bottom: 15),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sell),
-            label: 'Sell',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+          BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            onTap: onTabTapped,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_cart),
+                label: 'Buy',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.sell),
+                label: 'Sell',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.notifications),
+                label: 'Notifications',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
           ),
         ],
       ),
