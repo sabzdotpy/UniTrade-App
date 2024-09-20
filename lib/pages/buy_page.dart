@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_flutter/utils/AppImages.dart';
 
 class BuyPage extends StatefulWidget {
   const BuyPage({super.key});
@@ -20,7 +21,7 @@ class _BuyPageState extends State<BuyPage> {
       fontSize: 12
     ),
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10), // Rounded corners
+      borderRadius: BorderRadius.circular(10),
       side: const BorderSide(color: Color.fromRGBO(255, 255, 255, .2), width: 1)
     ),
   );
@@ -64,7 +65,7 @@ class _BuyPageState extends State<BuyPage> {
                 borderSide: const BorderSide(color: Colors.red, width: 1.0), // Border color when error occurs
                 borderRadius: BorderRadius.circular(12.0),
               ),
-              focusedErrorBorder: OutlineInputBorder(
+             focusedErrorBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.red, width: 1.0), // Focused border when there's an error
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -77,7 +78,7 @@ class _BuyPageState extends State<BuyPage> {
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 15),
+          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
           child:
               Padding(
                 padding: const EdgeInsets.only(left: 3),
@@ -132,10 +133,73 @@ class _BuyPageState extends State<BuyPage> {
                       )
                     ),
                     SizedBox(width: 10,),
-                  ]),
+                  ]
+                ),
               ),
-        )
+        ),
+        Expanded(child: Container(
+          width:  MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return BuyPageItem(
+                  title: 'UNO #${index + 1}',
+                  description: 'Arduino UNO, new condition',
+                  imageURL: Appimages.get("arduino.png"),
+                  rating: 4.7,
+                  price: 490);
+            },
+          ),
+        ) )
+      ],)
+      ));
+  }
+}
+
+class BuyPageItem extends StatelessWidget {
+  String title;
+  String description;
+  String imageURL;
+  double rating;
+  int price;
+
+  BuyPageItem({
+    required this.title,
+    required this.description,
+    required this.imageURL,
+    required this.rating,
+    required this.price,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 90,
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            color: Color.fromRGBO(255, 255, 255, .1),
+          ),
+          child: Wrap(
+            direction: Axis.horizontal,
+            children: [
+              Image.asset('assets/images/arduino.png', width: 40, height: 40,),
+              Text(title),
+              SizedBox(width: 10,),
+              Text(description),
+              SizedBox(width: 10,),
+              Text('\$$price')
+            ],
+          ),
+        ),
+        SizedBox(height: 10),
       ],
-    )));
+    );
   }
 }

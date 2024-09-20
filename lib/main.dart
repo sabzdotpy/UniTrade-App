@@ -50,8 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   final List<Widget> pagesTitle = [
-    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("Buy", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
-    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("Sell", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
+    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("BUY", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
+    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("SELL", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
     const Text("Notifications", style: TextStyle( fontWeight: FontWeight.w900 ),),
     const Text("Profile", style: TextStyle( fontWeight: FontWeight.w900 ),),
   ];
