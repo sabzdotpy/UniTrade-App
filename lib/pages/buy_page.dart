@@ -27,11 +27,8 @@ class _BuyPageState extends State<BuyPage> {
   );
 
 
-  static List<Map> buyPageItems = [
-    { 'title': 'Arduino UNO', 'imageURL': Appimages.get("arduino.png"), 'description': 'new arduino uno 5V unused, good condition and original brand.', 'rating': 5.0, 'price': 600, 'postedAt': '50 mins ago' },
-    { 'title': 'dos', 'description': 'Lorem ipsum', 'rating': 4.0, 'price': 299, 'postedAt': '2 mins ago' },
-    { 'title': 'tres', 'description': 'Lorem ipsum', 'rating': 4.0, 'price': 299, 'postedAt': '2 mins ago' },
-    { 'title': 'cuatro', 'description': 'Lorem ipsum', 'rating':  4.0,'price': 299, 'postedAt': '2 mins ago' },
+  static List<BuyPageProduct> buyPageItems = [
+    BuyPageProduct(title: "Arduino UNO", description: "lorem ipsum", category: "IOT Components", price: 599, rating: 4, postedAt: "2 hours ago"),
   ];
 
    void _showToast(String message) {
@@ -157,12 +154,7 @@ class _BuyPageState extends State<BuyPage> {
                 padding: const EdgeInsets.symmetric( vertical: 5 ),
                 child: 
                   BuyPageItem(
-                    title: buyPageItems[index]['title'],
-                    description: buyPageItems[index]['description'],
-                    imageURL: buyPageItems[index]['imageURL'],
-                    rating: buyPageItems[index]['rating'],
-                    price: buyPageItems[index]['price'],
-                    postedAt: buyPageItems[index]['postedAt'],
+                    product: buyPageItems[index],
                   ),
               );
             },
@@ -173,21 +165,31 @@ class _BuyPageState extends State<BuyPage> {
   }
 }
 
-class BuyPageItem extends StatelessWidget {
-  String title;
-  String description;
-  String? imageURL;
-  double rating;
-  int price;
-  String postedAt;
+class BuyPageProduct {
+  final String title;
+  final String description;
+  final String category;
+  final String? imageURL;
+  final num rating;     // supports both int and double, will be coerced to double during init.
+  final double price;
+  final String postedAt;
 
-  BuyPageItem({
+  BuyPageProduct({
     required this.title,
     required this.description,
-    this.imageURL,
-    required this.rating,
+    required this.category,
     required this.price,
     required this.postedAt,
+    required num rating,
+    this.imageURL
+  }) : rating = rating.toDouble();
+}
+
+class BuyPageItem extends StatelessWidget {
+  BuyPageProduct product;
+
+  BuyPageItem({
+    required this.product,
     super.key,
   });
 
@@ -217,7 +219,7 @@ class BuyPageItem extends StatelessWidget {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                imageURL ?? Appimages.get('image-placeholder.jpg'),
+                product.imageURL ?? Appimages.get('image-placeholder.jpg'),
                 width: 85,
                 height: 85,
                 fit: BoxFit.contain
@@ -243,7 +245,7 @@ class BuyPageItem extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "Daily Essentials",
+                        product.category,
                         style: TextStyle(
                           fontSize: 10,
                           color: Colors.white.withOpacity(.4)
@@ -252,7 +254,7 @@ class BuyPageItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      postedAt,
+                      product.postedAt,
                       style: TextStyle(fontSize: 10, 
                       color: Colors.white.withOpacity(.4)),
                     ),
@@ -263,7 +265,7 @@ class BuyPageItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      product.title,
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800
@@ -281,7 +283,7 @@ class BuyPageItem extends StatelessWidget {
                           const Icon(Icons.star, size: 12,),
                           const SizedBox(width: 2,),
                           Text(
-                            rating.toString(),
+                            product.rating.toString(),
                             style: TextStyle(
                               fontSize: 10,
                             ),
@@ -295,7 +297,7 @@ class BuyPageItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Text(
-                    description,
+                    product.description,
                     style: const TextStyle(
                         fontSize: 10, 
                         color: Color.fromRGBO(255, 155, 0, 1),
