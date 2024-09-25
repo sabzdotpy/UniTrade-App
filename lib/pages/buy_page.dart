@@ -26,6 +26,14 @@ class _BuyPageState extends State<BuyPage> {
     ),
   );
 
+
+  static List<Map> buyPageItems = [
+    { 'title': 'Arduino UNO', 'imageURL': Appimages.get("arduino.png"), 'description': 'new arduino uno 5V unused, good condition and original brand.', 'rating': 5.0, 'price': 600, 'postedAt': '50 mins ago' },
+    { 'title': 'dos', 'description': 'Lorem ipsum', 'rating': 4.0, 'price': 299, 'postedAt': '2 mins ago' },
+    { 'title': 'tres', 'description': 'Lorem ipsum', 'rating': 4.0, 'price': 299, 'postedAt': '2 mins ago' },
+    { 'title': 'cuatro', 'description': 'Lorem ipsum', 'rating':  4.0,'price': 299, 'postedAt': '2 mins ago' },
+  ];
+
    void _showToast(String message) {
     print("Showing toast.");
   }
@@ -143,18 +151,18 @@ class _BuyPageState extends State<BuyPage> {
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-            itemCount: 10,
+            itemCount: buyPageItems.length,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.symmetric( vertical: 5 ),
                 child: 
                   BuyPageItem(
-                    title: 'UNO #${index + 1}',
-                    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam soluta, repudiandae quidem ad sunt nihil vitae dolores iusto optio quia molestiae aperiam alias deserunt temporibus tempore placeat dicta sint animi error id quisquam. Nam obcaecati saepe quod quidem accusantium nesciunt facilis nisi ipsam accusamus minus explicabo rem soluta, fuga odit!',
-                    imageURL: Appimages.get("watch.png"),
-                    rating: 4.7,
-                    price: 490,
-                    postedAt: "2 minutes ago"
+                    title: buyPageItems[index]['title'],
+                    description: buyPageItems[index]['description'],
+                    imageURL: buyPageItems[index]['imageURL'],
+                    rating: buyPageItems[index]['rating'],
+                    price: buyPageItems[index]['price'],
+                    postedAt: buyPageItems[index]['postedAt'],
                   ),
               );
             },
@@ -168,7 +176,7 @@ class _BuyPageState extends State<BuyPage> {
 class BuyPageItem extends StatelessWidget {
   String title;
   String description;
-  String imageURL;
+  String? imageURL;
   double rating;
   int price;
   String postedAt;
@@ -176,7 +184,7 @@ class BuyPageItem extends StatelessWidget {
   BuyPageItem({
     required this.title,
     required this.description,
-    required this.imageURL,
+    this.imageURL,
     required this.rating,
     required this.price,
     required this.postedAt,
@@ -209,7 +217,7 @@ class BuyPageItem extends StatelessWidget {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                imageURL,
+                imageURL ?? Appimages.get('image-placeholder.jpg'),
                 width: 85,
                 height: 85,
                 fit: BoxFit.contain
