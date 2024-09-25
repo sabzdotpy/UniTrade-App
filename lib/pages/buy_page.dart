@@ -16,7 +16,7 @@ class _BuyPageState extends State<BuyPage> {
     foregroundColor: Colors.white,
     elevation: 0,
     minimumSize: Size.zero,
-    padding: EdgeInsets.fromLTRB(7, 5, 10, 5),
+    padding: const EdgeInsets.fromLTRB(7, 5, 10, 5),
     textStyle: const TextStyle(
       fontSize: 12
     ),
@@ -88,68 +88,75 @@ class _BuyPageState extends State<BuyPage> {
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [SizedBox(width: 6,), Text('All Categories'), Icon(Icons.arrow_drop_down_sharp)],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [Icon(Icons.circle), SizedBox(width: 10,), Text('IOT Components')],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [Icon(Icons.circle), SizedBox(width: 10,), Text('Mobile Accessories')],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [Icon(Icons.circle), SizedBox(width: 10,), Text('Desktop Peripherals')],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [Icon(Icons.circle), SizedBox(width: 10,), Text('Daily Essentials')],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     ElevatedButton( 
                       style: categoriesButtonStyle, 
                       onPressed: sayHi, 
-                      child: Row(
+                      child: const Row(
                         children: [Icon(Icons.circle), SizedBox(width: 10,), Text('Headphones')],
                       )
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                   ]
                 ),
               ),
         ),
         Expanded(child: Container(
           width:  MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+          padding: const EdgeInsets.fromLTRB(6, 10, 5, 7),
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
             itemCount: 10,
             itemBuilder: (context, index) {
-              return BuyPageItem(
-                  title: 'UNO #${index + 1}',
-                  description: 'Arduino UNO, new condition',
-                  imageURL: Appimages.get("arduino.png"),
-                  rating: 4.7,
-                  price: 490);
+              return Padding(
+                padding: const EdgeInsets.symmetric( vertical: 5 ),
+                child: 
+                  BuyPageItem(
+                    title: 'UNO #${index + 1}',
+                    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam soluta, repudiandae quidem ad sunt nihil vitae dolores iusto optio quia molestiae aperiam alias deserunt temporibus tempore placeat dicta sint animi error id quisquam. Nam obcaecati saepe quod quidem accusantium nesciunt facilis nisi ipsam accusamus minus explicabo rem soluta, fuga odit!',
+                    imageURL: Appimages.get("watch.png"),
+                    rating: 4.7,
+                    price: 490,
+                    postedAt: "2 minutes ago"
+                  ),
+              );
             },
           ),
         ) )
@@ -164,6 +171,7 @@ class BuyPageItem extends StatelessWidget {
   String imageURL;
   double rating;
   int price;
+  String postedAt;
 
   BuyPageItem({
     required this.title,
@@ -171,35 +179,142 @@ class BuyPageItem extends StatelessWidget {
     required this.imageURL,
     required this.rating,
     required this.price,
+    required this.postedAt,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 90,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: Color.fromRGBO(255, 255, 255, .1),
+    return Container(
+      height: 100,
+      width: double.infinity,  // Full width
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        color: Color.fromRGBO(255, 255, 255, .1),
+      ),
+      child: Row(
+        children: [
+          // Image Section
+          Container(
+            foregroundDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                gradient: const LinearGradient(
+                  colors: [ Colors.transparent,Color.fromARGB(255, 20, 20, 20)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 1],
+                ),
+            ),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                imageURL,
+                width: 85,
+                height: 85,
+                fit: BoxFit.contain
+              )
+            ),
           ),
-          child: Wrap(
-            direction: Axis.horizontal,
-            children: [
-              Image.asset('assets/images/arduino.png', width: 40, height: 40,),
-              Text(title),
-              SizedBox(width: 10,),
-              Text(description),
-              SizedBox(width: 10,),
-              Text('\$$price')
-            ],
+          SizedBox(width: 10), 
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (index) => const Padding(
+              padding: EdgeInsets.symmetric(vertical: 2.0),
+              child: BuyPageItemSplitter(),
+            )),
           ),
-        ),
-        SizedBox(height: 10),
-      ],
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Daily Essentials",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.white.withOpacity(.4)
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      postedAt,
+                      style: TextStyle(fontSize: 10, 
+                      color: Colors.white.withOpacity(.4)),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 3,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 0, 93, 19),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.star, size: 12,),
+                          const SizedBox(width: 2,),
+                          Text(
+                            rating.toString(),
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                        ]
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(height: 5),
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Text(
+                    description,
+                    style: const TextStyle(
+                        fontSize: 10, 
+                        color: Color.fromRGBO(255, 155, 0, 1),
+                      ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BuyPageItemSplitter extends StatelessWidget {
+  const BuyPageItemSplitter({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      width: 1.5,
+      height: 10,
     );
   }
 }
