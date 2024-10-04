@@ -13,16 +13,14 @@ class BuyPage extends StatefulWidget {
 class _BuyPageState extends State<BuyPage> {
   final TextEditingController searchController = TextEditingController();
 
-
   ButtonStyle categoriesButtonStyle(String buttonText) {
-
     const Map buttonBorderColors = {
-      "all": Color.fromRGBO(255, 255, 255, .2),
-      "IOT Components": Color.fromRGBO(255, 74, 74, .4),
-      "Mobile Accessories": Color.fromRGBO(96, 255, 39, .4),
-      "Desktop Peripherals": Color.fromRGBO(40, 126, 255, .4),
-      "Daily Essentials": Color.fromRGBO(255, 30, 229, .4),
-      "Headphones": Color.fromRGBO(255, 248, 39, .4),
+      "All Categories": Color.fromRGBO(255, 255, 255, .2),
+      "IOT Components": Color.fromRGBO(255, 74, 74, 1),
+      "Mobile Accessories": Color.fromRGBO(96, 255, 39, 1),
+      "Desktop Peripherals": Color.fromRGBO(40, 126, 255, 1),
+      "Daily Essentials": Color.fromRGBO(255, 30, 229, 1),
+      "Headphones": Color.fromRGBO(255, 248, 39, 1),
     };
 
     final ButtonStyle style = ElevatedButton.styleFrom(
@@ -34,13 +32,17 @@ class _BuyPageState extends State<BuyPage> {
       textStyle: const TextStyle(fontSize: 12),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
-          side: BorderSide(color: (activeCategory == buttonText) ?  buttonBorderColors[buttonText] : buttonBorderColors["all"], width: 1)),
+          side: BorderSide(
+              color: (activeCategory == buttonText)
+                  ? buttonBorderColors[buttonText]
+                  : buttonBorderColors["All Categories"],
+              width: 0.5)),
     );
 
     return style;
   }
 
-  String activeCategory = "all";
+  String activeCategory = "All Categories";
 
   static List<BuyPageProduct> allBuyPageItems = [
     BuyPageProduct(
@@ -66,6 +68,64 @@ class _BuyPageState extends State<BuyPage> {
         rating: 4,
         postedAt: "3 hours ago"),
   ];
+
+  static List<String> categories = [
+    "All Categories",
+    "IOT Components",
+    "Mobile Accessories",
+    "Desktop Peripherals",
+    "Daily Essentials",
+    "Headphones",
+    "Speakers"
+  ];
+
+  List<Widget> _createCategoriesButtons() {
+    List<Widget> buttonList = [];
+
+    buttonList.add(
+		ElevatedButton(
+			style: categoriesButtonStyle("All Categories"),
+			onPressed: () {
+				showAllCategoriesDialog(context);
+			},
+			child: const Row(
+				children: [
+				SizedBox(
+					width: 6,
+				),
+				Text('All Categories'),
+				Icon(Icons.arrow_drop_down_sharp)
+				],
+			),
+		)
+	);
+
+    buttonList.add(SizedBox(width: 10));
+
+    // Dynamically add other buttons from buttonLabels list with SizedBox in between
+    for (int i = 1; i < 5; i++) {
+      buttonList.add(
+        ElevatedButton(
+            style: categoriesButtonStyle(categories[i]),
+            onPressed: () => filterProductsByCategory(categories[i]),
+            child: Row(
+              children: [
+                const Icon(Icons.circle),
+                const SizedBox(
+                  width: 10,
+                ),
+                Text(categories[i])
+              ],
+            )),
+      );
+
+		if (i != categories.length - 1) {
+        buttonList.add(SizedBox(width:  10));
+      }
+    }
+
+    return buttonList;
+  }
 
   static List<BuyPageProduct> buyPageItems = [
     BuyPageProduct(
@@ -119,9 +179,9 @@ class _BuyPageState extends State<BuyPage> {
             child: Material(
               color: const Color.fromARGB(255, 35, 35, 35),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: Color.fromRGBO(255, 255, 255, .2), width: 1)
-              ),
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(
+                      color: Color.fromRGBO(255, 255, 255, .2), width: 1)),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
                 decoration: BoxDecoration(
@@ -135,8 +195,13 @@ class _BuyPageState extends State<BuyPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.category, size: 18,),
-                          SizedBox(width: 5,),
+                          Icon(
+                            Icons.category,
+                            size: 18,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
                           Text(
                             'Choose a category',
                             style: TextStyle(
@@ -147,51 +212,22 @@ class _BuyPageState extends State<BuyPage> {
                         ],
                       ),
                     ),
-                    ListTile(
-                      title: Text('All Categories', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        filterProductsByCategory('all');
-                      },
-                    ),
-                    ListTile(
-                      title: Text('IOT Components', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        print('IOT Components selected');
-                        filterProductsByCategory('IOT Components');
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Mobile Accessories', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        print('Mobile Accessories selected');
-                        filterProductsByCategory('Mobile Accessories');
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Desktop Peripherals', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        print('Desktop Peripherals selected');
-                        filterProductsByCategory('Desktop Peripherals');
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Daily Essentials', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        print('Daily Essentials selected');
-                        filterProductsByCategory('Daily Essentials');
-                      },
-                    ),
-                    ListTile(
-                      title: Text('Headphones', style: TextStyle( fontSize: 12 ),),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        print('Headphones selected');
-                        filterProductsByCategory('Headphones');
+                    ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 0),
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(
+                            categories[index],
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            filterProductsByCategory(categories[index]);
+                          },
+                        );
                       },
                     ),
                   ],
@@ -218,8 +254,9 @@ class _BuyPageState extends State<BuyPage> {
 
     setState(() {
       buyPageItems = allBuyPageItems;
+      activeCategory = category;
 
-      if (category != "all") {
+      if (category != "All Categories") {
         activeCategory = category;
         var filtered = buyPageItems
             .where((product) => product.category.contains(category));
@@ -298,106 +335,108 @@ class _BuyPageState extends State<BuyPage> {
             padding: const EdgeInsets.only(left: 3),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton(
-                      style: categoriesButtonStyle("all"),
-                      onPressed: () {
-                        showAllCategoriesDialog(context);
-                      },
-                      child: const Row(
-                        children: [
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('All Categories'),
-                          Icon(Icons.arrow_drop_down_sharp)
-                        ],
-                  ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: categoriesButtonStyle("IOT Components"),
-                      onPressed: () =>
-                          filterProductsByCategory("IOT Components"),
-                      
-                      child: const Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('IOT Components')
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: categoriesButtonStyle("Mobile Accessories"),
-                      onPressed: () =>
-                          filterProductsByCategory("Mobile Accessories"),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Mobile Accessories')
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: categoriesButtonStyle("Desktop Peripherals"),
-                      onPressed: () =>
-                          filterProductsByCategory("Desktop Peripherals"),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Desktop Peripherals')
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: categoriesButtonStyle("Daily Essentials"),
-                      onPressed: () =>
-                          filterProductsByCategory("Daily Essentials"),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Daily Essentials')
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                      style: categoriesButtonStyle("Headphones"),
-                      onPressed: () => filterProductsByCategory("Headphones"),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.circle),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text('Headphones')
-                        ],
-                      )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                ]),
+                children: _createCategoriesButtons()
+                // [
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("All Categories"),
+                //       onPressed: () {
+                //         showAllCategoriesDialog(context);
+                //       },
+                //       child: const Row(
+                //         children: [
+                //           SizedBox(
+                //             width: 6,
+                //           ),
+                //           Text('All Categories'),
+                //           Icon(Icons.arrow_drop_down_sharp)
+                //         ],
+                //   ),
+                //   ),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("IOT Components"),
+                //       onPressed: () =>
+                //           filterProductsByCategory("IOT Components"),
+
+                //       child: const Row(
+                //         children: [
+                //           Icon(Icons.circle),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+                //           Text('IOT Components')
+                //         ],
+                //       )),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("Mobile Accessories"),
+                //       onPressed: () =>
+                //           filterProductsByCategory("Mobile Accessories"),
+                //       child: const Row(
+                //         children: [
+                //           Icon(Icons.circle),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+                //           Text('Mobile Accessories')
+                //         ],
+                //       )),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("Desktop Peripherals"),
+                //       onPressed: () =>
+                //           filterProductsByCategory("Desktop Peripherals"),
+                //       child: const Row(
+                //         children: [
+                //           Icon(Icons.circle),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+                //           Text('Desktop Peripherals')
+                //         ],
+                //       )),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("Daily Essentials"),
+                //       onPressed: () =>
+                //           filterProductsByCategory("Daily Essentials"),
+                //       child: const Row(
+                //         children: [
+                //           Icon(Icons.circle),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+                //           Text('Daily Essentials')
+                //         ],
+                //       )),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                //   ElevatedButton(
+                //       style: categoriesButtonStyle("Headphones"),
+                //       onPressed: () => filterProductsByCategory("Headphones"),
+                //       child: const Row(
+                //         children: [
+                //           Icon(Icons.circle),
+                //           SizedBox(
+                //             width: 10,
+                //           ),
+                //           Text('Headphones')
+                //         ],
+                //       )),
+                //   const SizedBox(
+                //     width: 10,
+                //   ),
+                // ]
+                ),
           ),
         ),
         Expanded(
@@ -420,7 +459,10 @@ class _BuyPageState extends State<BuyPage> {
                         },
                       )
                     : const Center(
-                        child: (Text("No products found. Request instead.", style: TextStyle(fontSize: 12),)),
+                        child: (Text(
+                          "No products found. Request instead.",
+                          style: TextStyle(fontSize: 12),
+                        )),
                       )))
       ],
     )));
