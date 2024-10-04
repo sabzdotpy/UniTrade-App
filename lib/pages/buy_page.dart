@@ -13,18 +13,34 @@ class BuyPage extends StatefulWidget {
 class _BuyPageState extends State<BuyPage> {
   final TextEditingController searchController = TextEditingController();
 
-  final ButtonStyle categoriesButtonStyle = ElevatedButton.styleFrom(
-    backgroundColor: const Color.fromRGBO(255, 255, 255, 0.1),
-    foregroundColor: Colors.white,
-    elevation: 0,
-    minimumSize: Size.zero,
-    padding: const EdgeInsets.fromLTRB(7, 5, 10, 5),
-    textStyle: const TextStyle(fontSize: 12),
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(
-            color: Color.fromRGBO(255, 255, 255, .2), width: 1)),
-  );
+
+  ButtonStyle categoriesButtonStyle(String buttonText) {
+
+    const Map buttonBorderColors = {
+      "all": Color.fromRGBO(255, 255, 255, .2),
+      "IOT Components": Color.fromRGBO(255, 74, 74, .4),
+      "Mobile Accessories": Color.fromRGBO(96, 255, 39, .4),
+      "Desktop Peripherals": Color.fromRGBO(40, 126, 255, .4),
+      "Daily Essentials": Color.fromRGBO(255, 30, 229, .4),
+      "Headphones": Color.fromRGBO(255, 248, 39, .4),
+    };
+
+    final ButtonStyle style = ElevatedButton.styleFrom(
+      backgroundColor: const Color.fromRGBO(255, 255, 255, 0.1),
+      foregroundColor: Colors.white,
+      elevation: 0,
+      minimumSize: Size.zero,
+      padding: const EdgeInsets.fromLTRB(7, 5, 10, 5),
+      textStyle: const TextStyle(fontSize: 12),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: (activeCategory == buttonText) ?  buttonBorderColors[buttonText] : buttonBorderColors["all"], width: 1)),
+    );
+
+    return style;
+  }
+
+  String activeCategory = "all";
 
   static List<BuyPageProduct> allBuyPageItems = [
     BuyPageProduct(
@@ -99,57 +115,83 @@ class _BuyPageState extends State<BuyPage> {
       pageBuilder: (context, animation1, animation2) {
         return Center(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(80),
             child: Material(
-              borderRadius: BorderRadius.circular(8),
+              color: const Color.fromARGB(255, 35, 35, 35),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Color.fromRGBO(255, 255, 255, .2), width: 1)
+              ),
               child: Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      'Choose an Option',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.category, size: 18,),
+                          SizedBox(width: 5,),
+                          Text(
+                            'Choose a category',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     ListTile(
-                      title: Text('All Categories'),
+                      title: Text('All Categories', style: TextStyle( fontSize: 12 ),),
                       onTap: () {
                         Navigator.of(context).pop();
                         filterProductsByCategory('all');
                       },
                     ),
                     ListTile(
-                      title: Text('Option 2'),
+                      title: Text('IOT Components', style: TextStyle( fontSize: 12 ),),
                       onTap: () {
                         Navigator.of(context).pop();
-                        print('Option 2 selected');
+                        print('IOT Components selected');
+                        filterProductsByCategory('IOT Components');
                       },
                     ),
                     ListTile(
-                      title: Text('Option 3'),
+                      title: Text('Mobile Accessories', style: TextStyle( fontSize: 12 ),),
                       onTap: () {
                         Navigator.of(context).pop();
-                        print('Option 3 selected');
+                        print('Mobile Accessories selected');
+                        filterProductsByCategory('Mobile Accessories');
                       },
                     ),
                     ListTile(
-                      title: Text('Option 4'),
+                      title: Text('Desktop Peripherals', style: TextStyle( fontSize: 12 ),),
                       onTap: () {
                         Navigator.of(context).pop();
-                        print('Option 4 selected');
+                        print('Desktop Peripherals selected');
+                        filterProductsByCategory('Desktop Peripherals');
                       },
                     ),
                     ListTile(
-                      title: Text('Option 5'),
+                      title: Text('Daily Essentials', style: TextStyle( fontSize: 12 ),),
                       onTap: () {
                         Navigator.of(context).pop();
-                        print('Option 5 selected');
+                        print('Daily Essentials selected');
+                        filterProductsByCategory('Daily Essentials');
+                      },
+                    ),
+                    ListTile(
+                      title: Text('Headphones', style: TextStyle( fontSize: 12 ),),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        print('Headphones selected');
+                        filterProductsByCategory('Headphones');
                       },
                     ),
                   ],
@@ -161,7 +203,7 @@ class _BuyPageState extends State<BuyPage> {
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
         return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1), // Add blur effect
+          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3), // Add blur effect
           child: FadeTransition(
             opacity: animation,
             child: child,
@@ -178,6 +220,7 @@ class _BuyPageState extends State<BuyPage> {
       buyPageItems = allBuyPageItems;
 
       if (category != "all") {
+        activeCategory = category;
         var filtered = buyPageItems
             .where((product) => product.category.contains(category));
         buyPageItems = filtered.toList();
@@ -257,7 +300,7 @@ class _BuyPageState extends State<BuyPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("all"),
                       onPressed: () {
                         showAllCategoriesDialog(context);
                       },
@@ -269,14 +312,16 @@ class _BuyPageState extends State<BuyPage> {
                           Text('All Categories'),
                           Icon(Icons.arrow_drop_down_sharp)
                         ],
-                      )),
+                  ),
+                  ),
                   const SizedBox(
                     width: 10,
                   ),
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("IOT Components"),
                       onPressed: () =>
                           filterProductsByCategory("IOT Components"),
+                      
                       child: const Row(
                         children: [
                           Icon(Icons.circle),
@@ -290,7 +335,7 @@ class _BuyPageState extends State<BuyPage> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("Mobile Accessories"),
                       onPressed: () =>
                           filterProductsByCategory("Mobile Accessories"),
                       child: const Row(
@@ -306,7 +351,7 @@ class _BuyPageState extends State<BuyPage> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("Desktop Peripherals"),
                       onPressed: () =>
                           filterProductsByCategory("Desktop Peripherals"),
                       child: const Row(
@@ -322,7 +367,7 @@ class _BuyPageState extends State<BuyPage> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("Daily Essentials"),
                       onPressed: () =>
                           filterProductsByCategory("Daily Essentials"),
                       child: const Row(
@@ -338,7 +383,7 @@ class _BuyPageState extends State<BuyPage> {
                     width: 10,
                   ),
                   ElevatedButton(
-                      style: categoriesButtonStyle,
+                      style: categoriesButtonStyle("Headphones"),
                       onPressed: () => filterProductsByCategory("Headphones"),
                       child: const Row(
                         children: [
@@ -375,7 +420,7 @@ class _BuyPageState extends State<BuyPage> {
                         },
                       )
                     : const Center(
-                        child: (Text("No products found. Request instead.")),
+                        child: (Text("No products found. Request instead.", style: TextStyle(fontSize: 12),)),
                       )))
       ],
     )));
