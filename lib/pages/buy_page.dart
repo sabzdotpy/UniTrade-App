@@ -1,6 +1,8 @@
 import "dart:ui";
-
 import 'package:flutter/material.dart';
+
+
+import 'package:test_flutter/utils/fetch.dart';
 import 'package:test_flutter/utils/AppImages.dart';
 
 class BuyPage extends StatefulWidget {
@@ -9,9 +11,67 @@ class BuyPage extends StatefulWidget {
   @override
   State<BuyPage> createState() => _BuyPageState();
 }
-
+          
 class _BuyPageState extends State<BuyPage> {
   final TextEditingController searchController = TextEditingController();
+
+  late Future<Map<String, dynamic>> dataList;
+  late List<BuyPageProduct> allBuyPageItems = [];
+  late List<BuyPageProduct> buyPageItems = [];
+
+  String activeCategory = "All Categories";
+  static List<String> categories = [
+    "All Categories",
+    "IOT Components",
+    "Mobile Accessories",
+    "Desktop Peripherals",
+    "Daily Essentials",
+    "Headphones",
+    "Speakers"
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    print("Buy Page Initialized.");
+    fetchAllProducts();
+  }
+
+  void fetchAllProducts() async {
+    try {
+      print("Getting data from server.");
+      Map<String, dynamic> data = await fetchData();
+      setState(() {
+        List all = data['products'];
+
+        for (var product in all) {
+          allBuyPageItems.add(
+            BuyPageProduct(title: product['title'], description: product['description'], category: product['category'], price: product['price'], postedAt: product['postedAt'], rating: product['rating'])
+          );
+        }
+
+        buyPageItems = List.from(allBuyPageItems);
+        print(buyPageItems);
+      });
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
+
+    // dataList = fetchData();
+    // dataList.then( (res) {
+    //   print(res['products']);
+    //   List allProducts = res['products'];
+    //   setState(() {
+          // for (var product in allProducts) {
+          //   allBuyPageItems.add(
+          //     BuyPageProduct(title: product['title'], description: product['description'], category: product['category'], price: product['price'], postedAt: product['postedAt'], rating: product['rating'])
+          //   );
+          // }
+
+    //       buyPageItems = allBuyPageItems;
+    //   });
+    // });
+  }
 
   ButtonStyle categoriesButtonStyle(String buttonText) {
     const Map buttonBorderColors = {
@@ -42,65 +102,55 @@ class _BuyPageState extends State<BuyPage> {
     return style;
   }
 
-  String activeCategory = "All Categories";
 
-  static List<BuyPageProduct> allBuyPageItems = [
-    BuyPageProduct(
-        title: "Arduino UNO",
-        imageURL: Appimages.get("arduino.png"),
-        description: "lorem ipsum",
-        category: "IOT Components",
-        price: 599,
-        rating: 4,
-        postedAt: "2 hours ago"),
-    BuyPageProduct(
-        title: "Breadboard",
-        description: "lorem ipsum",
-        category: "IOT Components",
-        price: 40,
-        rating: 3.5,
-        postedAt: "3 hours ago"),
-    BuyPageProduct(
-        title: "USB Cable (B type)",
-        description: "lorem ipsum",
-        category: "Mobile Accessories",
-        price: 150,
-        rating: 4,
-        postedAt: "3 hours ago"),
-  ];
+  // allBuyPageItems = [
+  //   BuyPageProduct(
+  //       title: "Arduino UNO",
+  //       imageURL: Appimages.get("arduino.png"),
+  //       description: "lorem ipsum",
+  //       category: "IOT Components",
+  //       price: 599,
+  //       rating: 4,
+  //       postedAt: "2 hours ago"),
+  //   BuyPageProduct(
+  //       title: "Breadboard",
+  //       description: "lorem ipsum",
+  //       category: "IOT Components",
+  //       price: 40,
+  //       rating: 3.5,
+  //       postedAt: "3 hours ago"),
+  //   BuyPageProduct(
+  //       title: "USB Cable (B type)",
+  //       description: "lorem ipsum",
+  //       category: "Mobile Accessories",
+  //       price: 150,
+  //       rating: 4,
+  //       postedAt: "3 hours ago"),
+  // ];
 
-  static List<String> categories = [
-    "All Categories",
-    "IOT Components",
-    "Mobile Accessories",
-    "Desktop Peripherals",
-    "Daily Essentials",
-    "Headphones",
-    "Speakers"
-  ];
 
   List<Widget> _createCategoriesButtons() {
     List<Widget> buttonList = [];
 
     buttonList.add(
-		ElevatedButton(
-			style: categoriesButtonStyle("All Categories"),
-			onPressed: () {
-				showAllCategoriesDialog(context);
-			},
-			child: const Row(
-				children: [
-				SizedBox(
-					width: 6,
-				),
-				Text('All Categories'),
-				Icon(Icons.arrow_drop_down_sharp)
-				],
-			),
-		)
-	);
+      ElevatedButton(
+        style: categoriesButtonStyle("All Categories"),
+        onPressed: () {
+          showAllCategoriesDialog(context);
+        },
+        child: const Row(
+          children: [
+          SizedBox(
+            width: 6,
+          ),
+          Text('All Categories'),
+          Icon(Icons.arrow_drop_down_sharp)
+          ],
+        ),
+      )
+    );
 
-    buttonList.add(SizedBox(width: 10));
+    buttonList.add(const SizedBox(width: 10));
 
     // Dynamically add other buttons from buttonLabels list with SizedBox in between
     for (int i = 1; i < 5; i++) {
@@ -120,37 +170,12 @@ class _BuyPageState extends State<BuyPage> {
       );
 
 		if (i != categories.length - 1) {
-        buttonList.add(SizedBox(width:  10));
+        buttonList.add(const SizedBox(width:  10));
       }
     }
 
     return buttonList;
   }
-
-  static List<BuyPageProduct> buyPageItems = [
-    BuyPageProduct(
-        title: "Arduino UNO",
-        imageURL: Appimages.get("arduino.png"),
-        description: "lorem ipsum",
-        category: "IOT Components",
-        price: 599,
-        rating: 4,
-        postedAt: "2 hours ago"),
-    BuyPageProduct(
-        title: "Breadboard",
-        description: "lorem ipsum",
-        category: "IOT Components",
-        price: 40,
-        rating: 3.5,
-        postedAt: "3 hours ago"),
-    BuyPageProduct(
-        title: "USB Cable (B type)",
-        description: "lorem ipsum",
-        category: "Mobile Accessories",
-        price: 150,
-        rating: 4,
-        postedAt: "3 hours ago"),
-  ];
 
   void addProduct() {
     print("Adding new item");
@@ -274,198 +299,97 @@ class _BuyPageState extends State<BuyPage> {
     _showToast(modifiedText); // Show the toast with the modified text
   }
 
-  void sayHi() {
-    _showToast("Hello there!");
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
             child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: TextField(
-            onSubmitted:
-                _onSubmitted, // Callback for when the user presses "Done"
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              prefixIcon: const Icon(
-                Icons.search,
-                color: Color.fromARGB(150, 255, 255, 255),
-              ),
-              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.0),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                    color: Color.fromARGB(200, 180, 232, 252),
-                    width: 1.0), // Border color when focused
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                    color: Colors.red,
-                    width: 1.0), // Border color when error occurs
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                    color: Colors.red,
-                    width: 1.0), // Focused border when there's an error
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              filled: true,
-              hintStyle: const TextStyle(
-                  color: Color.fromARGB(150, 255, 255, 255),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400),
-              hintText: "search by product, or categories...",
-              fillColor: Colors.white.withOpacity(0.1),
-            ),
-          ),
-        ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 3),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: _createCategoriesButtons()
-                // [
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("All Categories"),
-                //       onPressed: () {
-                //         showAllCategoriesDialog(context);
-                //       },
-                //       child: const Row(
-                //         children: [
-                //           SizedBox(
-                //             width: 6,
-                //           ),
-                //           Text('All Categories'),
-                //           Icon(Icons.arrow_drop_down_sharp)
-                //         ],
-                //   ),
-                //   ),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("IOT Components"),
-                //       onPressed: () =>
-                //           filterProductsByCategory("IOT Components"),
-
-                //       child: const Row(
-                //         children: [
-                //           Icon(Icons.circle),
-                //           SizedBox(
-                //             width: 10,
-                //           ),
-                //           Text('IOT Components')
-                //         ],
-                //       )),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("Mobile Accessories"),
-                //       onPressed: () =>
-                //           filterProductsByCategory("Mobile Accessories"),
-                //       child: const Row(
-                //         children: [
-                //           Icon(Icons.circle),
-                //           SizedBox(
-                //             width: 10,
-                //           ),
-                //           Text('Mobile Accessories')
-                //         ],
-                //       )),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("Desktop Peripherals"),
-                //       onPressed: () =>
-                //           filterProductsByCategory("Desktop Peripherals"),
-                //       child: const Row(
-                //         children: [
-                //           Icon(Icons.circle),
-                //           SizedBox(
-                //             width: 10,
-                //           ),
-                //           Text('Desktop Peripherals')
-                //         ],
-                //       )),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("Daily Essentials"),
-                //       onPressed: () =>
-                //           filterProductsByCategory("Daily Essentials"),
-                //       child: const Row(
-                //         children: [
-                //           Icon(Icons.circle),
-                //           SizedBox(
-                //             width: 10,
-                //           ),
-                //           Text('Daily Essentials')
-                //         ],
-                //       )),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                //   ElevatedButton(
-                //       style: categoriesButtonStyle("Headphones"),
-                //       onPressed: () => filterProductsByCategory("Headphones"),
-                //       child: const Row(
-                //         children: [
-                //           Icon(Icons.circle),
-                //           SizedBox(
-                //             width: 10,
-                //           ),
-                //           Text('Headphones')
-                //         ],
-                //       )),
-                //   const SizedBox(
-                //     width: 10,
-                //   ),
-                // ]
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: TextField(
+                    onSubmitted:
+                        _onSubmitted, // Callback for when the user presses "Done"
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: Color.fromARGB(150, 255, 255, 255),
+                      ),
+                      contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color.fromARGB(200, 180, 232, 252),
+                            width: 1.0), // Border color when focused
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Colors.red,
+                            width: 1.0), // Border color when error occurs
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Colors.red,
+                            width: 1.0), // Focused border when there's an error
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      filled: true,
+                      hintStyle: const TextStyle(
+                          color: Color.fromARGB(150, 255, 255, 255),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400),
+                      hintText: "search by product, or categories...",
+                      fillColor: Colors.white.withOpacity(0.1),
+                    ),
+                  ),
                 ),
-          ),
-        ),
-        Expanded(
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.fromLTRB(6, 10, 5, 7),
-                child: (buyPageItems.isNotEmpty)
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
-                        itemCount: buyPageItems.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 5),
-                            child: BuyPageItem(
-                              product: buyPageItems[index],
-                            ),
-                          );
-                        },
-                      )
-                    : const Center(
-                        child: (Text(
-                          "No products found. Request instead.",
-                          style: TextStyle(fontSize: 12),
-                        )),
-                      )))
-      ],
-    )));
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 3),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _createCategoriesButtons()),
+                  ),
+                ),
+                Expanded(
+                    child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.fromLTRB(6, 10, 5, 7),
+                    child: (buyPageItems.isNotEmpty)
+                        ? ListView.builder(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 0),
+                            itemCount: buyPageItems.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                child: BuyPageItem(
+                                  product: buyPageItems[index],
+                                ),
+                              );
+                            },
+                          )
+                        : const Center(
+                            child: (Text(
+                              "No products found. Request instead.",
+                              style: TextStyle(fontSize: 12),
+                            )),
+                          )))
+              ],
+            )
+          )
+      );
   }
 }
 
@@ -476,6 +400,13 @@ class BuyPageItem extends StatelessWidget {
     required this.product,
     super.key,
   });
+
+  final ratingColors = {
+    "4": const Color.fromARGB(255, 0, 93, 19),
+    "3": const Color.fromARGB(255, 94, 85, 5),
+    "2": const Color.fromARGB(255, 134, 74, 18),
+    "1": const Color.fromARGB(255, 105, 2, 2)
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -556,7 +487,7 @@ class BuyPageItem extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.fromLTRB(3, 1, 5, 1),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 0, 93, 19),
+                        color: ratingColors[product.rating.toString()[0]],
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -622,7 +553,7 @@ class BuyPageProduct {
   final String? imageURL;
   final num
       rating; // supports both int and double, will be coerced to double during init.
-  final double price;
+  final num price;
   final String postedAt;
 
   BuyPageProduct(

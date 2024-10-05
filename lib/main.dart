@@ -4,7 +4,20 @@ import 'package:test_flutter/pages/notifications_page.dart';
 import 'package:test_flutter/pages/profile_page.dart';
 import 'package:test_flutter/pages/sell_page.dart';
 
-void main() {
+import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // check if app is in dev or prod
+  if (kDebugMode) {
+    print("App is in [DEBUG MODE]");
+    await dotenv.load(fileName: ".env.dev");
+  } else {
+    await dotenv.load(fileName: ".env.prod");
+  }
+
   runApp(MyApp());
 }
 
@@ -13,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomeScreen(),
       theme: ThemeData(
         brightness: Brightness.dark, // Set the overall brightness to dark
