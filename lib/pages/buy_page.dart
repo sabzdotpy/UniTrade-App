@@ -290,13 +290,26 @@ class _BuyPageState extends State<BuyPage> {
     });
   }
 
-  void _showToast(String message) {
-    print("Showing toast.");
-  }
 
   void _onSubmitted(String value) {
-    final modifiedText = '$value>'; // Modify the text by adding ">"
-    _showToast(modifiedText); // Show the toast with the modified text
+    if (value.isEmpty) {
+        print("Search term is empty. Showing all products");
+        setState(() {
+          buyPageItems = allBuyPageItems;
+        });      
+    }
+    else {
+        print("Searching for $value");
+        final filteredItems = allBuyPageItems.where((product) {
+          final titleLower = product.title.toLowerCase();
+          final searchLower = value.toLowerCase();
+          return titleLower.contains(searchLower);
+        }).toList();
+        
+        setState(() {
+          buyPageItems = filteredItems;
+        });
+    }
   }
 
 
