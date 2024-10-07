@@ -25,7 +25,6 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            // On successful login, navigate to the home page
             var box = Hive.box('uniBox');
             box.put('isLoggedIn', true);
             Navigator.pushReplacement(

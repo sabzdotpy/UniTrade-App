@@ -20,6 +20,8 @@ void main() async {
   }
 
   await Hive.initFlutter();
+  var box = await Hive.openBox("uniBox");
+
   runApp(MyApp());
 }
 
@@ -61,39 +63,35 @@ class _AppInitializerState extends State<AppInitializer> {
   @override
   void initState() {
     super.initState();
-    checkLaunchState();
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkLaunchState();
+    });
   }
 
   void checkLaunchState() async {
     var box = Hive.box('uniBox');
 
-    isFirstLaunch = box.get('isFirstLaunch', defaultValue: true);
+    isFirstLaunch = box.get('isFirstTime', defaultValue: true);
     isLoggedIn = box.get('isLoggedIn', defaultValue: false);
 
-    // Navigate to appropriate page
     if (isFirstLaunch) {
-      box.put('isFirstLaunch', false);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => WelcomePage()),
-        );
-      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomePage()),
+      );
     } else if (isLoggedIn) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
-    });
     } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage()),
+      );
     }
+    
   }
 
   @override
