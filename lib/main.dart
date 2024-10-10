@@ -6,9 +6,9 @@ import 'package:hive/hive.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:logger/logger.dart';
 
-import "./pages/home_page.dart";
-import "./pages/login_page.dart";
 import "./pages/welcome_page.dart";
+import './pages/choose_college_page.dart';
+import "./pages/home_page.dart";
 
 import 'firebase_options.dart';
 
@@ -101,7 +101,7 @@ class _AppInitializerState extends State<AppInitializer> {
       print.i("App opened but not logged in. Showing Login Page");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => ChooseCollegePage()),
       );
     }
     

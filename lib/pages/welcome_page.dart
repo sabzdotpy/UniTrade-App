@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import './login_page.dart';
+import './choose_college_page.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -21,7 +21,7 @@ class WelcomePage extends StatelessWidget {
                 var box = Hive.box('appPreferences');
                 box.put('isFirstTime', false);
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()));
+                    MaterialPageRoute(builder: (context) => const ChooseCollegePage()));
               },
               child: const Text('Go to Login'),
             ),

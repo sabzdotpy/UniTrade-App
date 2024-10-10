@@ -95,7 +95,7 @@ class _BuyPageState extends State<BuyPage> {
   // allBuyPageItems = [
   //   BuyPageProduct(
   //       title: "Arduino UNO",
-  //       imageURL: Appimages.get("arduino.png"),
+  //       imageURL: AppImages.get("arduino.png"),
   //       description: "lorem ipsum",
   //       category: "IOT Components",
   //       price: 599,

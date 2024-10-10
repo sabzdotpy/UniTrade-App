@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import './login_page.dart';
+import './choose_college_page.dart';
 import '../utils/google_sign_in_provider.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
       _googleSignInProvider.signOut();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to the login page after logout
+        MaterialPageRoute(builder: (context) => ChooseCollegePage()), // Navigate to the login page after logout
       );
     } catch (e) {
       print("Error during logout: $e");
