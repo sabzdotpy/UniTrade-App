@@ -12,11 +12,11 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("UniTrade"),
+        title: const Text("UniTrade"),
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.money_outlined), label: "BUY"),
           BottomNavigationBarItem(icon: Icon(Icons.sell), label: "SELL")
         ],

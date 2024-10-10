@@ -1,6 +1,7 @@
 import "dart:ui";
 import 'package:flutter/material.dart';
 import 'dart:developer';
+import 'package:logger/logger.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
 import 'package:test_flutter/utils/app_images.dart';
@@ -19,6 +20,8 @@ class _BuyPageState extends State<BuyPage> {
   late List<BuyPageProduct> allBuyPageItems = [];
   late List<BuyPageProduct> buyPageItems = [];
 
+  Logger print = Logger(printer: PrettyPrinter());
+
   String activeCategory = "All Categories";
   static List<String> categories = [
     "All Categories",
@@ -33,13 +36,13 @@ class _BuyPageState extends State<BuyPage> {
   @override
   void initState() {
     super.initState();
-    print("Buy Page Initialized.");
+    print.i("Buy Page Initialized.");
     fetchAllProducts();
   }
 
   void fetchAllProducts() async {
     try {
-      print("Getting data from server.");
+      print.i("Getting data from server.");
       Map<String, dynamic> data = await fetchData();
       setState(() {
         List all = data['products'];
@@ -51,15 +54,15 @@ class _BuyPageState extends State<BuyPage> {
         }
 
         buyPageItems = List.from(allBuyPageItems);
-        print(buyPageItems);
+        print.i(buyPageItems);
       });
     } catch (e) {
-      print('Error fetching products: $e');
+      print.i('Error fetching products: $e');
     }
 
     // dataList = fetchData();
     // dataList.then( (res) {
-    //   print(res['products']);
+    //   print.i(res['products']);
     //   List allProducts = res['products'];
     //   setState(() {
           // for (var product in allProducts) {
@@ -178,7 +181,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   void addProduct() {
-    print("Adding new item");
+    print.i("Adding new item");
     setState(() {
       buyPageItems.add(BuyPageProduct(
           title: "Parker Pen",
@@ -275,7 +278,7 @@ class _BuyPageState extends State<BuyPage> {
   }
 
   void filterProductsByCategory(String category) {
-    print("Only show $category");
+    print.i("Only show $category");
 
     setState(() {
       buyPageItems = allBuyPageItems;
@@ -293,13 +296,13 @@ class _BuyPageState extends State<BuyPage> {
 
   void _onSubmitted(String value) {
     if (value.isEmpty) {
-        print("Search term is empty. Showing all products");
+        print.i("Search term is empty. Showing all products");
         setState(() {
           buyPageItems = allBuyPageItems;
         });      
     }
     else {
-        print("Searching for $value");
+        print.i("Searching for $value");
         final filteredItems = allBuyPageItems.where((product) {
           final titleLower = product.title.toLowerCase();
           final searchLower = value.toLowerCase();
@@ -430,11 +433,14 @@ class BuyPageItem extends StatelessWidget {
     "1": const Color.fromARGB(255, 105, 2, 2)
   };
 
+  Logger print = Logger(printer: PrettyPrinter());
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        inspect(product);
+        print.i(inspect(product));
+        print.i(product.imageURL);
       },
       child: Container(
         height: 100,

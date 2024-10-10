@@ -6,6 +6,8 @@ import 'package:test_flutter/pages/profile_page.dart';
 import 'package:test_flutter/pages/sell_page.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -16,10 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late Widget pageTitle;
 
   final List<Widget> _pages = [
-    BuyPage(),
-    SellPage(),
-    NotificationsPage(),
-    ProfilePage()
+    const BuyPage(),
+    const SellPage(),
+    const NotificationsPage(),
+    const ProfilePage()
   ];
 
   final List<Widget> pagesTitle = [
@@ -65,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
             type: BottomNavigationBarType.fixed,
             currentIndex: _currentIndex,
             onTap: onTabTapped,
-            items: [
+            items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.shopping_cart),
                 label: 'Buy',

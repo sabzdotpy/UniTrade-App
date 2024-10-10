@@ -5,6 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import './login_page.dart';
 
 class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,16 +14,16 @@ class WelcomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Welcome to the App'),
-            SizedBox(height: 20),
+            const Text('Welcome to the App'),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                var box = Hive.box('uniBox');
+                var box = Hive.box('appPreferences');
                 box.put('isFirstTime', false);
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
+                    MaterialPageRoute(builder: (context) => const LoginPage()));
               },
-              child: Text('Go to Login'),
+              child: const Text('Go to Login'),
             ),
           ],
         ),

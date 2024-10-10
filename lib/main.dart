@@ -3,10 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:logger/logger.dart';
 
 import "./pages/home_page.dart";
 import "./pages/login_page.dart";
 import "./pages/welcome_page.dart";
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +24,11 @@ void main() async {
   }
 
   await Hive.initFlutter();
-  var box = await Hive.openBox("uniBox");
+  var box = await Hive.openBox("appPreferences");
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(MyApp());
 }
@@ -60,32 +68,37 @@ class _AppInitializerState extends State<AppInitializer> {
   late bool isFirstLaunch;
   late bool isLoggedIn;
 
+  final Logger print = Logger(); // Initialize logger
+
   @override
   void initState() {
     super.initState();
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkLaunchState();
     });
   }
 
   void checkLaunchState() async {
-    var box = Hive.box('uniBox');
+    var box = Hive.box('appPreferences');
 
     isFirstLaunch = box.get('isFirstTime', defaultValue: true);
     isLoggedIn = box.get('isLoggedIn', defaultValue: false);
 
     if (isFirstLaunch) {
+      print.i("First Time Opening the App. Showing Welcome page.");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => WelcomePage()),
       );
     } else if (isLoggedIn) {
+      print.i("Already logged in. Showing the home page.");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } else {
+      print.i("App opened but not logged in. Showing Login Page");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
