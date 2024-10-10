@@ -12,6 +12,7 @@ class GoogleSignInProvider {
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       // Trigger the Google authentication process
+      await _googleSignIn.signOut();
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         // User canceled the sign-in, return null

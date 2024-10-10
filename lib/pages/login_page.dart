@@ -31,7 +31,6 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: ElevatedButton(
           onPressed: () async {
-            print.i("Logging in for testing without sign in.");
             var box = Hive.box('appPreferences');
 
             User? user = await _googleSignInProvider.signInWithGoogle(context);

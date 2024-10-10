@@ -43,6 +43,7 @@ class _BuyPageState extends State<BuyPage> {
   void fetchAllProducts() async {
     try {
       print.i("Getting data from server.");
+      
       Map<String, dynamic> data = await fetchData();
       setState(() {
         List all = data['products'];
@@ -54,26 +55,11 @@ class _BuyPageState extends State<BuyPage> {
         }
 
         buyPageItems = List.from(allBuyPageItems);
-        print.i(buyPageItems);
+        print.i("Found ${buyPageItems.length} items.");
       });
     } catch (e) {
       print.i('Error fetching products: $e');
     }
-
-    // dataList = fetchData();
-    // dataList.then( (res) {
-    //   print.i(res['products']);
-    //   List allProducts = res['products'];
-    //   setState(() {
-          // for (var product in allProducts) {
-          //   allBuyPageItems.add(
-          //     BuyPageProduct(title: product['title'], description: product['description'], category: product['category'], price: product['price'], postedAt: product['postedAt'], rating: product['rating'])
-          //   );
-          // }
-
-    //       buyPageItems = allBuyPageItems;
-    //   });
-    // });
   }
 
   ButtonStyle categoriesButtonStyle(String buttonText) {
