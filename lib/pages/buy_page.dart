@@ -1,9 +1,9 @@
 import "dart:ui";
 import 'package:flutter/material.dart';
-
+import 'dart:developer';
 
 import 'package:test_flutter/utils/fetch.dart';
-import 'package:test_flutter/utils/AppImages.dart';
+import 'package:test_flutter/utils/app_images.dart';
 
 class BuyPage extends StatefulWidget {
   const BuyPage({super.key});
@@ -208,7 +208,7 @@ class _BuyPageState extends State<BuyPage> {
                   side: const BorderSide(
                       color: Color.fromRGBO(255, 255, 255, .2), width: 1)),
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -246,7 +246,7 @@ class _BuyPageState extends State<BuyPage> {
                         return ListTile(
                           title: Text(
                             categories[index],
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                           ),
                           onTap: () {
                             Navigator.of(context).pop();
@@ -322,6 +322,7 @@ class _BuyPageState extends State<BuyPage> {
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: TextField(
+                    controller: searchController,
                     onSubmitted:
                         _onSubmitted, // Callback for when the user presses "Done"
                     textInputAction: TextInputAction.search,
@@ -330,6 +331,14 @@ class _BuyPageState extends State<BuyPage> {
                         Icons.search,
                         color: Color.fromARGB(150, 255, 255, 255),
                       ),
+                      suffixIcon: (searchController.text.isNotEmpty) 
+                                    ? IconButton(
+                                        icon: const Icon(Icons.clear), 
+                                        onPressed: () { 
+                                          searchController.clear(); 
+                                          _onSubmitted("");
+                                        },)
+                                    : null,
                       contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.0),
@@ -423,120 +432,125 @@ class BuyPageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      width: double.infinity, // Full width
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color.fromRGBO(255, 255, 255, .1),
-      ),
-      child: Row(
-        children: [
-          // Image Section
-          Container(
-            foregroundDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: const LinearGradient(
-                colors: [Colors.transparent, Color.fromARGB(255, 20, 20, 20)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.2, 1],
-              ),
-            ),
-            child: ClipRRect(
+    return GestureDetector(
+      onTap: () {
+        inspect(product);
+      },
+      child: Container(
+        height: 100,
+        width: double.infinity, // Full width
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          color: Color.fromRGBO(255, 255, 255, .1),
+        ),
+        child: Row(
+          children: [
+            // Image Section
+            Container(
+              foregroundDecoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                    product.imageURL ?? Appimages.get('image-placeholder.jpg'),
-                    width: 85,
-                    height: 85,
-                    fit: BoxFit.contain)),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-                4,
-                (index) => const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.0),
-                      child: BuyPageItemSplitter(),
-                    )),
-          ),
-          SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                gradient: const LinearGradient(
+                  colors: [Colors.transparent, Color.fromARGB(255, 20, 20, 20)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.2, 1],
+                ),
+              ),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                      product.imageURL ?? "https://beautyrepublicfdl.com/wp-content/uploads/2020/06/placeholder-image.jpg",
+                      width: 85,
+                      height: 85,
+                      fit: BoxFit.cover)),
+            ),
+            const SizedBox(width: 10),
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        product.category,
+              children: List.generate(
+                  4,
+                  (index) => const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 2.0),
+                        child: BuyPageItemSplitter(),
+                      )),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          product.category,
+                          style: TextStyle(
+                              fontSize: 10, color: Colors.white.withOpacity(.4)),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        product.postedAt,
                         style: TextStyle(
                             fontSize: 10, color: Colors.white.withOpacity(.4)),
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      product.postedAt,
-                      style: TextStyle(
-                          fontSize: 10, color: Colors.white.withOpacity(.4)),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 3,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.title,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w800),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(3, 1, 5, 1),
-                      decoration: BoxDecoration(
-                        color: ratingColors[product.rating.toString()[0]],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(
-                          Icons.star,
-                          size: 12,
-                        ),
-                        const SizedBox(
-                          width: 2,
-                        ),
-                        Text(
-                          product.rating.toString(),
-                          style: TextStyle(
-                            fontSize: 10,
-                          ),
-                        ),
-                      ]),
-                    )
-                  ],
-                ),
-                SizedBox(height: 5),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Text(
-                    product.description,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      color: Color.fromRGBO(255, 155, 0, 1),
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.title,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w800),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(3, 1, 5, 1),
+                        decoration: BoxDecoration(
+                          color: ratingColors[product.rating.toString()[0]],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          const Icon(
+                            Icons.star,
+                            size: 12,
+                          ),
+                          const SizedBox(
+                            width: 2,
+                          ),
+                          Text(
+                            product.rating.toString(),
+                            style: const TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                        ]),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Text(
+                      product.description,
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Color.fromRGBO(255, 155, 0, 1),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
