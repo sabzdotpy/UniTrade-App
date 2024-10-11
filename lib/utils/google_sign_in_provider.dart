@@ -9,7 +9,7 @@ class GoogleSignInProvider {
 
   final Logger print = Logger(printer: PrettyPrinter());
 
-  Future<User?> signInWithGoogle(BuildContext context) async {
+  Future<User?> signInWithGoogle(BuildContext context, String endsWith) async {
     try {
       // Trigger the Google authentication process
       await _googleSignIn.signOut();
@@ -20,12 +20,12 @@ class GoogleSignInProvider {
       }
 
       // Check if the user's email matches the allowed domain
-      if (!googleUser.email.endsWith('klu.ac.in')) {
-        print.i("User email does not end with klu.ac.in");
+      if (!googleUser.email.endsWith(endsWith)) {
+        print.i("User email does not end with $endsWith");
         // Show an error message if the email doesn't match
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Only users with an klu.ac.in domain can log in.'),
+          SnackBar(
+            content: Text('Only users with an $endsWith domain can log in.'),
           ),
         );
         // Sign out from GoogleSignIn

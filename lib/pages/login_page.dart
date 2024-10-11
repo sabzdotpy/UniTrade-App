@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,12 +13,23 @@ import 'choose_college_page.dart';
 
 
 class LoginPage extends StatefulWidget {
+
+  final String collegeName;
+  final String mail;
+
+  LoginPage({
+    required this.collegeName,
+    required this.mail
+  });
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
     bool isSigningIn = false;
+    late String collegeName;
+    late String mail;
 
     final double _signInButtonHeight = 60;
 
@@ -27,6 +39,9 @@ class _LoginPageState extends State<LoginPage> {
     @override
     void initState() {
       super.initState();
+      collegeName = widget.collegeName;
+      mail = widget.mail;
+
       print.i("Login Page Initialized.");
     }
 
@@ -36,7 +51,9 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: ElevatedButton.icon(
-          onPressed: () {}, 
+          onPressed: () {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ChooseCollegePage()));
+          }, 
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0), // Control the border radius here
@@ -77,14 +94,14 @@ class _LoginPageState extends State<LoginPage> {
                   width: 2,
                 )
               ),
-              child: const Row(
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon( Icons.info, size: 20, ),
                   SizedBox(width: 5,),
                   Expanded(
                     child: Text(
-                      "Since you have chosen Kalasalingam Academy of Research and Education, only emails ending with 'klu.ac.in' will be permitted.",
+                      "Since you have chosen $collegeName, only emails ending with '$mail' will be permitted.",
                       textAlign: TextAlign.left,
                       softWrap: true,
                     ),
@@ -100,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
             (isSigningIn)
                 ? const CircularProgressIndicator() // Show loading indicator during sign-in
                 // : GoogleSignInButton(googleSignInProvider: _googleSignInProvider, print: print),
-                : SignInButton(googleSignInProvider: _googleSignInProvider, print: print),
+                : SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail,),
                 // Stack(
                 //   alignment: Alignment.center,
                 //   children: [
@@ -185,13 +202,15 @@ class SignInButton extends StatefulWidget {
 
 
   final GoogleSignInProvider googleSignInProvider; // Define GoogleSignInProvider
-  final dynamic print; // Dynamic type to handle printing/logging
+  final dynamic print;
+  final String mail;
 
   // Constructor to receive the parameters
   const SignInButton({
     Key? key,
     required this.googleSignInProvider,
     required this.print,
+    required this.mail
   }) : super(key: key);
 
 
@@ -205,12 +224,14 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
   late AnimationController _controller;
   late GoogleSignInProvider googleSignInProvider;
   late dynamic print;
+  late String mail;
 
   @override
   void initState() {
     super.initState();
     googleSignInProvider = widget.googleSignInProvider;
     print = widget.print;
+    mail = widget.mail;
     _controller = AnimationController(
       duration: const Duration(seconds: 4),
       vsync: this,
@@ -268,7 +289,7 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
             ),
             onPressed: () async {
               var box = Hive.box('appPreferences');
-                User? user = await googleSignInProvider.signInWithGoogle(context);
+                User? user = await googleSignInProvider.signInWithGoogle(context, mail);
                 if (user != null) {
                   print.i("Google Sign in successful. Proceeding to main page.");
                   box.put('isLoggedIn', true);
