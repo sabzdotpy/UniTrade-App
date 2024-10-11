@@ -50,9 +50,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: ElevatedButton.icon(
           onPressed: () {
-            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ChooseCollegePage()));
              Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(

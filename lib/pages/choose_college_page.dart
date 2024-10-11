@@ -147,7 +147,7 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
             ElevatedButton(
               onPressed: () {
                 if (collegeAndMails[selectedCollege] != null) {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) => LoginPage(
