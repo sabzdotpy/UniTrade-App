@@ -27,7 +27,7 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
     "SRM Institute of Technology": "srm.edu.in"
   };
 
-  late String selectedCollege;
+  late String selectedCollege = "Kalasalingam Academy of Research and Education";
   final TextEditingController collegeTextEditController = TextEditingController();
 
   @override
@@ -149,12 +149,49 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                 if (collegeAndMails[selectedCollege] != null) {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage(collegeName: selectedCollege, mail: collegeAndMails[selectedCollege]!  )),
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) => LoginPage(
+                        collegeName: selectedCollege,
+                        mail: collegeAndMails[selectedCollege]!,
+                      ),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        const begin = Offset(1.0, 0.0); // Start the animation from the right
+                        const end = Offset.zero; // End at the center
+                        const curve = Curves.ease;
+
+                        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                        var offsetAnimation = animation.drive(tween);
+
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: child,
+                        );
+                      },
+                    ),
                   );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => LoginPage(collegeName: selectedCollege, mail: collegeAndMails[selectedCollege]!  )),
+                  // );
                 }
               }, 
               child: const Text("Proceed")
             ),
+
+            SizedBox(height: 40,),
+
+            GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('We will be adding support for more colleges soon!'),
+                  ),
+                );
+              },
+              child: Text(
+                "Cannot find your college?",
+              ),
+            )
           ],
         ),
       ),

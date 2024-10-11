@@ -52,7 +52,26 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: ElevatedButton.icon(
           onPressed: () {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ChooseCollegePage()));
+            // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ChooseCollegePage()));
+             Navigator.pushReplacement(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) => ChooseCollegePage(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(-1.0, 0.0); // Start the animation from the left
+                    const end = Offset.zero; // End at the center
+                    const curve = Curves.ease;
+
+                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
           }, 
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
