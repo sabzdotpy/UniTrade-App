@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:logger/logger.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
-import 'package:test_flutter/utils/app_images.dart';
 
 class BuyPage extends StatefulWidget {
   const BuyPage({super.key});

@@ -10,18 +10,18 @@ class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   Future<void> _logout(BuildContext context) async {
-    GoogleSignInProvider  _googleSignInProvider = GoogleSignInProvider();
+    GoogleSignInProvider  googleSignInProvider = GoogleSignInProvider();
 
     try {
       await FirebaseAuth.instance.signOut();
-      _googleSignInProvider.signOut();
+      googleSignInProvider.signOut();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChooseCollegePage()), // Navigate to the login page after logout
+        MaterialPageRoute(builder: (context) => const ChooseCollegePage()), // Navigate to the login page after logout
       );
     } catch (e) {
       print("Error during logout: $e");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Error logging out. Please try again."),
       ));
     }
@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                 var box = await Hive.openBox("appPreferences");
                 box.put('isLoggedIn', false);
               },
-              child: Text("Logout"),
+              child: const Text("Logout"),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -58,7 +58,7 @@ class ProfilePage extends StatelessWidget {
                   );
                 }
               },
-              child: Text("Print User")
+              child: const Text("Print User")
             )
           ],
         ),

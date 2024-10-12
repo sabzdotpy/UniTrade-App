@@ -42,9 +42,9 @@ dependencies:
   logger: ^2.4.0
   dropdown_button2: ^2.3.9
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # icons
   cupertino_icons: ^1.0.8
+  hugeicons: ^0.0.7
 
 flutter_launcher_icons:
   android: "launcher_icon"

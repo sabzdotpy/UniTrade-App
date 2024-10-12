@@ -6,7 +6,7 @@ Future< Map<String, dynamic>> fetchData() async {
   print("..");
   String? url = dotenv.env['SERVER_URL'];
 
-  print("Sending requests to: ${url}/get-products");
+  print("Sending requests to: $url/get-products");
 
   final response = await http.get(Uri.parse('$url/get-products'));
   Map<String, dynamic> res = jsonDecode(response.body);

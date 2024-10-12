@@ -34,6 +34,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -60,6 +62,8 @@ class MyApp extends StatelessWidget {
 }
 
 class AppInitializer extends StatefulWidget {
+  const AppInitializer({super.key});
+
   @override
   _AppInitializerState createState() => _AppInitializerState();
 }
@@ -89,19 +93,19 @@ class _AppInitializerState extends State<AppInitializer> {
       print.i("First Time Opening the App. Showing Welcome page.");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => WelcomePage()),
+        MaterialPageRoute(builder: (context) => const WelcomePage()),
       );
     } else if (isLoggedIn) {
       print.i("Already logged in. Showing the home page.");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } else {
       print.i("App opened but not logged in. Showing Login Page");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ChooseCollegePage()),
+        MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
       );
     }
     
@@ -109,7 +113,7 @@ class _AppInitializerState extends State<AppInitializer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(), // Loading spinner while checking state
       ),

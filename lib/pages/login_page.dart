@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'dart:math' as math;
+import 'package:hugeicons/hugeicons.dart';
 
 import '../utils/app_images.dart';
 import "./home_page.dart";
@@ -17,7 +18,7 @@ class LoginPage extends StatefulWidget {
   final String collegeName;
   final String mail;
 
-  LoginPage({
+  const LoginPage({super.key, 
     required this.collegeName,
     required this.mail
   });
@@ -27,7 +28,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-    bool isSigningIn = false;
     late String collegeName;
     late String mail;
 
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
              Navigator.pushReplacement(
                 context,
                 PageRouteBuilder(
-                  pageBuilder: (context, animation, secondaryAnimation) => ChooseCollegePage(),
+                  pageBuilder: (context, animation, secondaryAnimation) => const ChooseCollegePage(),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     const begin = Offset(-1.0, 0.0); // Start the animation from the left
                     const end = Offset.zero; // End at the center
@@ -77,10 +77,10 @@ class _LoginPageState extends State<LoginPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0), // Control the border radius here
             ),
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Button padding
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Button padding
           ),
-          icon: Icon(Icons.chevron_left),
-          label: Text("Back"),
+          icon: const Icon(Icons.chevron_left),
+          label: const Text("Back"),
 
         ),
         elevation: 0, // Optional: remove AppBar shadow
@@ -88,128 +88,97 @@ class _LoginPageState extends State<LoginPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              AppImages.get('unitrade.png'),
-              height: 150,
-              width: 150,
-            ),
+        child: Container(
+          padding: EdgeInsets.only(bottom: 100),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
 
-            const SizedBox(height: 20),
+              const Text(
+                "Sign in to UniTrade",
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w900
+                ),
+              ),
 
-            Container(
-              width: MediaQuery.of(context).size.width * 0.82,
-              // height: 70,
-              alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(77, 146, 202, 0.6),
-                borderRadius: const BorderRadius.all(Radius.circular(8)),
-                border: Border.all(
-                  color: const Color.fromARGB(126, 171, 215, 252),
-                  width: 2,
+              Image.asset(
+                AppImages.get('unitrade.png'),
+                height: 150,
+                width: 150,
+              ),
+          
+              const SizedBox(height: 20),
+          
+              Container(
+                width: MediaQuery.of(context).size.width * 0.82,
+                // height: 70,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(77, 146, 202, 0.6),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(
+                    color: const Color.fromARGB(126, 171, 215, 252),
+                    width: 2,
+                  )
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Icon( Icons.info, size: 20, ),
+                    const SizedBox(width: 5,),
+                    Expanded(
+                      child: Text(
+                        "Since you have chosen $collegeName, only emails ending with '$mail' will be permitted.",
+                        textAlign: TextAlign.left,
+                        softWrap: true,
+                      ),
+                    ),
+                  ],
                 )
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon( Icons.info, size: 20, ),
-                  SizedBox(width: 5,),
-                  Expanded(
-                    child: Text(
-                      "Since you have chosen $collegeName, only emails ending with '$mail' will be permitted.",
-                      textAlign: TextAlign.left,
-                      softWrap: true,
-                    ),
-                  ),
-                ],
-              )
+          
+              const SizedBox(height: 50,),
               
-              
-            ),
-
-            const SizedBox(height: 20,),
-            
-            (isSigningIn)
-                ? const CircularProgressIndicator() // Show loading indicator during sign-in
-                // : GoogleSignInButton(googleSignInProvider: _googleSignInProvider, print: print),
-                : SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail,),
-                // Stack(
-                //   alignment: Alignment.center,
-                //   children: [
-                //     // Background container with radial gradient (Google logo colors)
-                //     Container(
-                //       width: MediaQuery.of(context).size.width * 0.5,
-                //       height: _signInButtonHeight,
-                //       decoration: const BoxDecoration(
-                //         shape: BoxShape.rectangle,
-                //         borderRadius: BorderRadius.all(Radius.circular(38)),
-                //         gradient: LinearGradient(
-                //           begin: Alignment.centerLeft,
-                //           end: Alignment.centerRight,
-                //           colors: [
-                //             Colors.blue,   
-                //             Colors.green,  
-                //             Colors.yellow, 
-                //             Colors.red,    
-                //           ],
-                //           stops: [0.0, 0.33, 0.66, 1.0],
-                //         ),
-                //     ),),
-
-                //     Container(
-                //       height: (_signInButtonHeight - 5),
-                //       width: MediaQuery.of(context).size.width * 0.489,
-                //       child: ElevatedButton(
-                //         style: ElevatedButton.styleFrom(
-                //           backgroundColor: const Color.fromRGBO(20, 20, 20, 1),
-                //           shape: const RoundedRectangleBorder(
-                //             borderRadius: BorderRadius.all(Radius.circular(38)),
-                //           )
-                //         ),
-                //         onPressed: () async {
-                          // var box = Hive.box('appPreferences');
-                          // User? user = await _googleSignInProvider.signInWithGoogle(context);
-                          // if (user != null) {
-                          //   print.i("Google Sign in successful. Proceeding to main page.");
-                          //   box.put('isLoggedIn', true);
-                          //   Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(builder: (context) => const HomeScreen()),
-                          //   );
-                          // }
-                          // else {
-                          //   print.w("No user found after Google Login is closed.");
-                          // }
-                //         },
-                //         child: const Text(
-                //           'Sign in with Google',
-                //           style: TextStyle(
-                //             color: Colors.white,
-                //             fontSize: 18,
-                //             fontWeight: FontWeight.bold,
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
-
-            const SizedBox(height: 50),
-
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+              SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail),
+          
+              const SizedBox(height: 50),
+          
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'According to our policy, buying and selling are limited to within your college.',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               ),
-            ),
-          ],
+
+              const SizedBox(height: 10,),
+
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+
+              const SizedBox(height: 10,),
+
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+
+            ],
+          ),
         ),
       ),
     );
@@ -220,27 +189,29 @@ class _LoginPageState extends State<LoginPage> {
 class SignInButton extends StatefulWidget {
 
 
-  final GoogleSignInProvider googleSignInProvider; // Define GoogleSignInProvider
+  final GoogleSignInProvider googleSignInProvider;
   final dynamic print;
   final String mail;
 
   // Constructor to receive the parameters
   const SignInButton({
-    Key? key,
+    super.key,
     required this.googleSignInProvider,
     required this.print,
     required this.mail
-  }) : super(key: key);
+  });
 
 
   @override
   _SignInButtonState createState() => _SignInButtonState();
 }
 
-class _SignInButtonState extends State<SignInButton> with SingleTickerProviderStateMixin {
+class _SignInButtonState extends State<SignInButton> with TickerProviderStateMixin {
   final double _signInButtonHeight = 50;
+  late bool isSigningIn = false;
 
-  late AnimationController _controller;
+  late AnimationController _signInButtonGradientController;
+  late AnimationController _signInLoadingSpinnerController;
   late GoogleSignInProvider googleSignInProvider;
   late dynamic print;
   late String mail;
@@ -251,15 +222,21 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
     googleSignInProvider = widget.googleSignInProvider;
     print = widget.print;
     mail = widget.mail;
-    _controller = AnimationController(
-      duration: const Duration(seconds: 4),
+    _signInButtonGradientController = AnimationController(
+      duration: const Duration(seconds: 30),
       vsync: this,
-    )..repeat(); // Repeat the animation continuously
+    )..repeat();
+
+    _signInLoadingSpinnerController = AnimationController(
+      duration: const Duration(seconds: 5),
+      vsync: this,
+    )..repeat(); //
   }
 
   @override
   void dispose() {
-    _controller.dispose(); // Dispose of the controller when not needed
+    _signInButtonGradientController.dispose();
+    _signInLoadingSpinnerController.dispose();
     super.dispose();
   }
 
@@ -270,25 +247,25 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
       children: [
         // Animated gradient container
         AnimatedBuilder(
-          animation: _controller,
+          animation: _signInButtonGradientController,
           builder: (context, child) {
             return Container(
               width: MediaQuery.of(context).size.width * 0.5,
               height: _signInButtonHeight,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.all(Radius.circular(38)),
+                borderRadius: const BorderRadius.all(Radius.circular(38)),
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [
-                    Colors.blue, // Blue
-                    Colors.green, // Green
-                    Colors.yellow, // Yellow
-                    Colors.red, // Red
+                  colors: const [
+                    Color.fromRGBO(33, 150, 243, 1),
+                    Color.fromRGBO(76, 175, 80, .7),
+                    Color.fromRGBO(255, 235, 59, 1),
+                    Color.fromRGBO(255, 29, 13, 0.4),
                   ],
                   // Rotate the gradient based on the animation
-                  transform: GradientRotation(_controller.value * 2 * math.pi),
+                  transform: GradientRotation(_signInButtonGradientController.value * 2 * math.pi),
                 ),
               ),
             );
@@ -296,10 +273,11 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
         ),
 
         // Elevated Button on top
-        Container(
+        SizedBox(
           height: (_signInButtonHeight - 5),
           width: MediaQuery.of(context).size.width * 0.489,
           child: ElevatedButton(
+
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromRGBO(20, 20, 20, 1),
               shape: const RoundedRectangleBorder(
@@ -307,9 +285,19 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
               ),
             ),
             onPressed: () async {
+              if (isSigningIn) {
+                return;
+              }
+
+              setState(() {
+                isSigningIn = true;
+              });
               var box = Hive.box('appPreferences');
                 User? user = await googleSignInProvider.signInWithGoogle(context, mail);
                 if (user != null) {
+                  setState(() {
+                    isSigningIn = false;
+                  });
                   print.i("Google Sign in successful. Proceeding to main page.");
                   box.put('isLoggedIn', true);
                   Navigator.pushReplacement(
@@ -318,20 +306,41 @@ class _SignInButtonState extends State<SignInButton> with SingleTickerProviderSt
                   );
                 }
                 else {
+                  setState(() {
+                    isSigningIn = false;
+                  });
                   print.w("No user found after Google Login is closed.");
                 }
             },
-            child: const Text(
-              'Sign in with Google',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            child: 
+              (!isSigningIn)
+              ? const Text(
+                  'Sign in with Google',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  RotationTransition(
+                    turns: _signInLoadingSpinnerController,
+                    child: const HugeIcon(
+                      icon: HugeIcons.strokeRoundedLoading03,
+                      color: Colors.grey,
+                      size: 20.0,
+                    ) 
+                  ),
+                  const SizedBox(width: 8),
+                  const Text('Signing you in...', style: TextStyle(fontSize: 18, color: Colors.grey )),
+                ],
+              )
           ),
         ),
       ],
     );
   }
 }
+

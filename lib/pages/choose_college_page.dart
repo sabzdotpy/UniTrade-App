@@ -142,7 +142,7 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
             ),
 
 
-            SizedBox(height: 30,),
+            const SizedBox(height: 30,),
 
             ElevatedButton(
               onPressed: () {
@@ -178,17 +178,17 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
               child: const Text("Proceed")
             ),
 
-            SizedBox(height: 40,),
+            const SizedBox(height: 40,),
 
             GestureDetector(
               onTap: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('We will be adding support for more colleges soon!'),
                   ),
                 );
               },
-              child: Text(
+              child: const Text(
                 "Cannot find your college?",
               ),
             )
