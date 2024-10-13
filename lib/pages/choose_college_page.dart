@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
 import "./login_page.dart";
 import "../utils/google_sign_in_provider.dart";
+import '../utils/app_images.dart';
 
 class ChooseCollegePage extends StatefulWidget {
   const ChooseCollegePage({super.key});
@@ -50,9 +48,43 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  AppImages.get('unitrade.png'),
+                  height: 80,
+                  width: 80,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                  child: Text(
+                    "UniTrade",
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.w900
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20,),
+
+            const Text(
+              "Choose your college",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w900,
+                color: Color.fromRGBO(190, 190, 190, 1),
+              ),
+            ),
+
+            const SizedBox(height: 70),
             
             DropdownButtonHideUnderline(
-              child: DropdownButton2<String>(
+              child: DropdownButton2<String>(                
                 isExpanded: true,
                 hint: Text(
                   'Choose your college',
@@ -62,16 +94,16 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                   ),
                 ),
                 items: collegeAndMails.keys
-                    .map((item) => DropdownMenuItem(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                  .map((item) => DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                            fontSize: 14,
                           ),
-                        ))
-                    .toList(),
+                        ),
+                      ))
+                  .toList(),
                 value: selectedCollege,
                 onChanged: (value) {
                   setState(() {
@@ -85,8 +117,8 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Color.fromRGBO(220, 220, 220, 0.2),
-                        Color.fromRGBO(200, 200, 200, 0.4)
+                        Color.fromRGBO(220, 220, 220, 0.3),
+                        Color.fromRGBO(200, 200, 200, 0.2)
                       ],
                       transform: GradientRotation(110)
                     ),
@@ -97,7 +129,7 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                   maxHeight: 200,
                 ),
                 menuItemStyleData: const MenuItemStyleData(
-                  height: 40,
+                  height: 50,
                 ),
                 dropdownSearchData: DropdownSearchData(
                   searchController: collegeTextEditController,
@@ -132,7 +164,6 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                     return item.value.toString().toLowerCase().contains(searchValue.toLowerCase());
                   },
                 ),
-                //This to clear the search value when you close the menu
                 onMenuStateChange: (isOpen) {
                   if (!isOpen) {
                     collegeTextEditController.clear();
@@ -142,7 +173,7 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
             ),
 
 
-            const SizedBox(height: 30,),
+            const SizedBox(height: 50,),
 
             ElevatedButton(
               onPressed: () {
@@ -155,8 +186,8 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                         mail: collegeAndMails[selectedCollege]!,
                       ),
                       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        const begin = Offset(1.0, 0.0); // Start the animation from the right
-                        const end = Offset.zero; // End at the center
+                        const begin = Offset(1.0, 0.0);
+                        const end = Offset.zero;
                         const curve = Curves.ease;
 
                         var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
@@ -169,13 +200,15 @@ class _ChooseCollegePageState extends State<ChooseCollegePage> {
                       },
                     ),
                   );
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => LoginPage(collegeName: selectedCollege, mail: collegeAndMails[selectedCollege]!  )),
-                  // );
                 }
               }, 
-              child: const Text("Proceed")
+              style: ElevatedButton.styleFrom(
+                side: const BorderSide(
+                  width: .5,
+                  color: Color.fromRGBO(200, 200, 200, .5)
+                )
+              ),
+              child: const Text("Proceed"),
             ),
 
             const SizedBox(height: 40,),

@@ -30,7 +30,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home: AppInitializer(),
+      home: const AppInitializer(),
 
       theme: ThemeData(
         brightness: Brightness.dark, // Set the overall brightness to dark

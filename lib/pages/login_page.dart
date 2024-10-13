@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'dart:math' as math;
 import 'package:hugeicons/hugeicons.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 
 import '../utils/app_images.dart';
 import "./home_page.dart";
@@ -74,42 +76,82 @@ class _LoginPageState extends State<LoginPage> {
               );
           }, 
           style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromRGBO(200, 200, 200, .2),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0), // Control the border radius here
+              side: const BorderSide(
+                width: 1,
+                color: Color.fromRGBO(200, 200, 200, .3)
+              ),
+              borderRadius: BorderRadius.circular(8),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Button padding
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
           icon: const Icon(Icons.chevron_left),
           label: const Text("Back"),
 
         ),
-        elevation: 0, // Optional: remove AppBar shadow
-        backgroundColor: Colors.transparent, // Optional: transparent background
+        elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Container(
-          padding: EdgeInsets.only(bottom: 100),
+          padding: const EdgeInsets.only(bottom: 100),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
+              // const Text(
+              //   "Sign in to UniTrade",
+              //   style: TextStyle(
+              //     fontSize: 40,
+              //     fontWeight: FontWeight.w900
+              //   ),
+              // ),
+
+              // Image.asset(
+              //   AppImages.get('unitrade.png'),
+              //   height: 150,
+              //   width: 150,
+              // ),
+          
+              // const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    AppImages.get('unitrade.png'),
+                    height: 80,
+                    width: 80,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "UniTrade",
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w900
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10,),
+
               const Text(
-                "Sign in to UniTrade",
+                "Sign in to your account",
                 style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                  color: Color.fromRGBO(190, 190, 190, 1),
                 ),
               ),
 
-              Image.asset(
-                AppImages.get('unitrade.png'),
-                height: 150,
-                width: 150,
-              ),
-          
-              const SizedBox(height: 20),
+              SizedBox(height: 50,),
           
               Container(
                 width: MediaQuery.of(context).size.width * 0.82,
@@ -130,10 +172,15 @@ class _LoginPageState extends State<LoginPage> {
                     const Icon( Icons.info, size: 20, ),
                     const SizedBox(width: 5,),
                     Expanded(
-                      child: Text(
-                        "Since you have chosen $collegeName, only emails ending with '$mail' will be permitted.",
-                        textAlign: TextAlign.left,
-                        softWrap: true,
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(text: "Since you have chosen $collegeName, only emails ending with "),
+                            TextSpan(text: "@$mail", style: const TextStyle( color: Color.fromARGB(255, 253, 159, 164), fontWeight: FontWeight.w600 )),
+                            const TextSpan(text: " will be permitted."),
+                          ]
+                        ),
                       ),
                     ),
                   ],
@@ -223,7 +270,7 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
     print = widget.print;
     mail = widget.mail;
     _signInButtonGradientController = AnimationController(
-      duration: const Duration(seconds: 30),
+      duration: const Duration(seconds: 10),
       vsync: this,
     )..repeat();
 
@@ -260,9 +307,9 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                   end: Alignment.centerRight,
                   colors: const [
                     Color.fromRGBO(33, 150, 243, 1),
-                    Color.fromRGBO(76, 175, 80, .7),
+                    Color.fromRGBO(76, 175, 80, .3),
                     Color.fromRGBO(255, 235, 59, 1),
-                    Color.fromRGBO(255, 29, 13, 0.4),
+                    Color.fromRGBO(255, 29, 13, .9),
                   ],
                   // Rotate the gradient based on the animation
                   transform: GradientRotation(_signInButtonGradientController.value * 2 * math.pi),
@@ -322,19 +369,14 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                     fontWeight: FontWeight.bold,
                   ),
                 )
-              : Row(
+              : const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  RotationTransition(
-                    turns: _signInLoadingSpinnerController,
-                    child: const HugeIcon(
-                      icon: HugeIcons.strokeRoundedLoading03,
-                      color: Colors.grey,
-                      size: 20.0,
-                    ) 
+                  CupertinoActivityIndicator(
+                    radius: 8,
                   ),
-                  const SizedBox(width: 8),
-                  const Text('Signing you in...', style: TextStyle(fontSize: 18, color: Colors.grey )),
+                  SizedBox(width: 8),
+                  Text('Signing you in...', style: TextStyle(fontSize: 18, color: Colors.grey )),
                 ],
               )
           ),
@@ -343,4 +385,3 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
     );
   }
 }
-
