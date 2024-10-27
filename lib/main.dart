@@ -12,6 +12,7 @@ import "./pages/home_page.dart";
 
 import 'firebase_options.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -23,9 +24,10 @@ void main() async {
     await dotenv.load(fileName: ".env.prod");
   }
 
+  
   await Hive.initFlutter();
-  var box = await Hive.openBox("appPreferences");
-
+  await Hive.openBox("appPreferences");
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -48,11 +50,11 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color.fromRGBO(20, 20, 20, 1),  // Set primary color to black
         scaffoldBackgroundColor: Colors.black, // Set background to black
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color.fromARGB(255, 15, 15, 15), // Navbar background color
+          backgroundColor: Colors.transparent, // Navbar background color
           foregroundColor: Colors.white, // Navbar text/icon color
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Color.fromARGB(255, 15, 15, 15), // Dark background for Bottom Nav Bar
+          backgroundColor: Colors.transparent, // Dark background for Bottom Nav Bar
           selectedItemColor: Colors.white, // Color for selected item (white)
           unselectedItemColor: Colors.white54 // Color for unselected items (faded white)
         ),

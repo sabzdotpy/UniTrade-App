@@ -93,138 +93,128 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Container(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-
-              // const Text(
-              //   "Sign in to UniTrade",
-              //   style: TextStyle(
-              //     fontSize: 40,
-              //     fontWeight: FontWeight.w900
-              //   ),
-              // ),
-
-              // Image.asset(
-              //   AppImages.get('unitrade.png'),
-              //   height: 150,
-              //   width: 150,
-              // ),
-          
-              // const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppImages.get('unitrade.png'),
-                    height: 80,
-                    width: 80,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Text(
-                      "UniTrade",
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w900
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 10,),
-
-              const Text(
-                "Sign in to your account",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w900,
-                  color: Color.fromRGBO(190, 190, 190, 1),
-                ),
-              ),
-
-              SizedBox(height: 50,),
-          
-              Container(
-                width: MediaQuery.of(context).size.width * 0.82,
-                // height: 70,
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                decoration: BoxDecoration(
-                  color: const Color.fromRGBO(77, 146, 202, 0.6),
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  border: Border.all(
-                    color: const Color.fromARGB(126, 171, 215, 252),
-                    width: 2,
-                  )
-                ),
-                child: Row(
+      body: Flexible(
+        // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: SingleChildScrollView(
+          // padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Icon( Icons.info, size: 20, ),
-                    const SizedBox(width: 5,),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(fontSize: 12, color: Colors.white),
-                          children: <TextSpan>[
-                            TextSpan(text: "Since you have chosen $collegeName, only emails ending with "),
-                            TextSpan(text: "@$mail", style: const TextStyle( color: Color.fromARGB(255, 253, 159, 164), fontWeight: FontWeight.w600 )),
-                            const TextSpan(text: " will be permitted."),
-                          ]
+                    Image.asset(
+                      AppImages.get('unitrade.png'),
+                      height: 80,
+                      width: 80,
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Text(
+                        "UniTrade",
+                        style: TextStyle(
+                          fontSize: 40,
+                          fontWeight: FontWeight.w900
                         ),
                       ),
                     ),
                   ],
-                )
-              ),
-          
-              const SizedBox(height: 50,),
-              
-              SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail),
-          
-              const SizedBox(height: 50),
-          
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'According to our policy, buying and selling are limited to within your college.',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-              ),
-
-              const SizedBox(height: 10,),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+            
+                const SizedBox(height: 10,),
+            
+                const Text(
+                  "Sign in to your account",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w900,
+                    color: Color.fromRGBO(190, 190, 190, 1),
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 10,),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+            
+                SizedBox(height: 50,),
+            
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.82,
+                  // height: 70,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: const Color.fromRGBO(77, 146, 202, 0.6),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    border: Border.all(
+                      color: const Color.fromARGB(126, 171, 215, 252),
+                      width: 2,
+                    )
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon( Icons.info, size: 20, ),
+                      const SizedBox(width: 5,),
+                      Expanded(
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(fontSize: 12, color: Colors.white),
+                            children: <TextSpan>[
+                              TextSpan(text: "Since you have chosen $collegeName, only emails ending with "),
+                              TextSpan(text: "@$mail", style: const TextStyle( color: Color.fromARGB(255, 253, 159, 164), fontWeight: FontWeight.w600 )),
+                              const TextSpan(text: " will be permitted."),
+                            ]
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
                 ),
-              ),
-
-            ],
+            
+                const SizedBox(height: 50,),
+                
+                SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail),
+            
+                const SizedBox(height: 50),
+            
+                Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'According to our policy, buying and selling are limited to within your college.',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 10,),
+                    
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 10,),
+                    
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
+            
+              ],
+            ),
           ),
         ),
       ),
@@ -292,7 +282,6 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Animated gradient container
         AnimatedBuilder(
           animation: _signInButtonGradientController,
           builder: (context, child) {
@@ -311,7 +300,6 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                     Color.fromRGBO(255, 235, 59, 1),
                     Color.fromRGBO(255, 29, 13, .9),
                   ],
-                  // Rotate the gradient based on the animation
                   transform: GradientRotation(_signInButtonGradientController.value * 2 * math.pi),
                 ),
               ),
@@ -319,7 +307,6 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
           },
         ),
 
-        // Elevated Button on top
         SizedBox(
           height: (_signInButtonHeight - 5),
           width: MediaQuery.of(context).size.width * 0.489,
@@ -327,6 +314,7 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
 
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromRGBO(20, 20, 20, 1),
+              padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(38)),
               ),
@@ -360,25 +348,28 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                 }
             },
             child: 
-              (!isSigningIn)
-              ? const Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: (!isSigningIn)
+                  ? const Text(
+                      'Sign in with Google',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CupertinoActivityIndicator(radius: 8),
+                      SizedBox(width: 8),
+                      Text('Signing you in...', style: TextStyle(fontSize: 18, color: Colors.grey )),
+                    ],
                   ),
-                )
-              : const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CupertinoActivityIndicator(
-                    radius: 8,
-                  ),
-                  SizedBox(width: 8),
-                  Text('Signing you in...', style: TextStyle(fontSize: 18, color: Colors.grey )),
-                ],
               )
+              
           ),
         ),
       ],

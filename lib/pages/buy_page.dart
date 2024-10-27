@@ -2,6 +2,7 @@ import "dart:ui";
 import 'package:flutter/material.dart';
 import 'dart:developer';
 import 'package:logger/logger.dart';
+import 'package:test_flutter/utils/app_images.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
 
@@ -20,6 +21,8 @@ class _BuyPageState extends State<BuyPage> {
   late List<BuyPageProduct> buyPageItems = [];
 
   Logger print = Logger(printer: PrettyPrinter());
+
+  String status = "";
 
   String activeCategory = "All Categories";
   static List<String> categories = [
@@ -42,14 +45,26 @@ class _BuyPageState extends State<BuyPage> {
   void fetchAllProducts() async {
     try {
       print.i("Getting data from server.");
+      setState(() {
+        status = "Loading...";
+      });
       
       Map<String, dynamic> data = await fetchData();
       setState(() {
+        status = "";
         List all = data['products'];
 
         for (var product in all) {
           allBuyPageItems.add(
-            BuyPageProduct(title: product['title'], description: product['description'], category: product['category'], price: product['price'], postedAt: product['postedAt'], rating: product['rating'])
+            BuyPageProduct(
+              title: product['title'], 
+              description: product['description'], 
+              category: product['category'], 
+              price: product['price'], 
+              postedAt: product['postedAt'], 
+              rating: product['rating'], 
+              imageURL: product['imageURL']
+            )
           );
         }
 
@@ -58,6 +73,9 @@ class _BuyPageState extends State<BuyPage> {
       });
     } catch (e) {
       print.i('Error fetching products: $e');
+      setState(() {
+        status = "Error!";
+      });
     }
   }
 
@@ -89,33 +107,6 @@ class _BuyPageState extends State<BuyPage> {
 
     return style;
   }
-
-
-  // allBuyPageItems = [
-  //   BuyPageProduct(
-  //       title: "Arduino UNO",
-  //       imageURL: AppImages.get("arduino.png"),
-  //       description: "lorem ipsum",
-  //       category: "IOT Components",
-  //       price: 599,
-  //       rating: 4,
-  //       postedAt: "2 hours ago"),
-  //   BuyPageProduct(
-  //       title: "Breadboard",
-  //       description: "lorem ipsum",
-  //       category: "IOT Components",
-  //       price: 40,
-  //       rating: 3.5,
-  //       postedAt: "3 hours ago"),
-  //   BuyPageProduct(
-  //       title: "USB Cable (B type)",
-  //       description: "lorem ipsum",
-  //       category: "Mobile Accessories",
-  //       price: 150,
-  //       rating: 4,
-  //       postedAt: "3 hours ago"),
-  // ];
-
 
   List<Widget> _createCategoriesButtons() {
     List<Widget> buttonList = [];
@@ -171,6 +162,7 @@ class _BuyPageState extends State<BuyPage> {
       buyPageItems.add(BuyPageProduct(
           title: "Parker Pen",
           description: "rich pen",
+          imageURL: "https://conference.nbasbl.org/wp-content/uploads/2022/05/placeholder-image-1.png",
           category: "Daily Essentials",
           price: 45,
           rating: 5,
@@ -390,10 +382,10 @@ class _BuyPageState extends State<BuyPage> {
                               );
                             },
                           )
-                        : const Center(
+                        : Center(
                             child: (Text(
-                              "No products found. Request instead.",
-                              style: TextStyle(fontSize: 12),
+                              (status != "") ? "No products found. Request instead." : status,
+                              style: const TextStyle(fontSize: 12),
                             )),
                           )))
               ],
@@ -424,7 +416,7 @@ class BuyPageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print.i(inspect(product));
+        print.i(product.title);
         print.i(product.imageURL);
       },
       child: Container(
@@ -451,7 +443,7 @@ class BuyPageItem extends StatelessWidget {
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
-                      product.imageURL ?? "https://beautyrepublicfdl.com/wp-content/uploads/2020/06/placeholder-image.jpg",
+                      product.imageURL,
                       width: 85,
                       height: 85,
                       fit: BoxFit.cover)),
@@ -568,9 +560,8 @@ class BuyPageProduct {
   final String title;
   final String description;
   final String category;
-  final String? imageURL;
-  final num
-      rating; // supports both int and double, will be coerced to double during init.
+  final String imageURL;
+  final num rating; // supports both int and double, will be coerced to double during init.
   final num price;
   final String postedAt;
 
@@ -581,6 +572,6 @@ class BuyPageProduct {
       required this.price,
       required this.postedAt,
       required num rating,
-      this.imageURL})
+      required this.imageURL})
       : rating = rating.toDouble();
 }
