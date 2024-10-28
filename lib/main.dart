@@ -23,7 +23,6 @@ void main() async {
     await dotenv.load(fileName: ".env.prod");
   }
 
-  
   await Hive.initFlutter();
   await Hive.openBox("appPreferences");
   
