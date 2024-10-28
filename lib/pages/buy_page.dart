@@ -1,8 +1,6 @@
 import "dart:ui";
 import 'package:flutter/material.dart';
-import 'dart:developer';
 import 'package:logger/logger.dart';
-import 'package:test_flutter/utils/app_images.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
 

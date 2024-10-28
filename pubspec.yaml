@@ -46,6 +46,7 @@ dependencies:
   # icons
   cupertino_icons: ^1.0.8
   hugeicons: ^0.0.7
+  image_picker: ^1.1.2
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'dart:math' as math;
-import 'package:hugeicons/hugeicons.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 
 import '../utils/app_images.dart';
 import "./home_page.dart";
@@ -97,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
         // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: SingleChildScrollView(
           // padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -136,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
             
-                SizedBox(height: 50,),
+                const SizedBox(height: 50,),
             
                 Container(
                   width: MediaQuery.of(context).size.width * 0.82,
@@ -178,9 +175,9 @@ class _LoginPageState extends State<LoginPage> {
             
                 const SizedBox(height: 50),
             
-                Column(
+                const Column(
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'According to our policy, buying and selling are limited to within your college.',
@@ -189,9 +186,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     
-                    const SizedBox(height: 10,),
+                    SizedBox(height: 10,),
                     
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
@@ -200,9 +197,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     
-                    const SizedBox(height: 10,),
+                    SizedBox(height: 10,),
                     
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Text(
                         'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
@@ -314,7 +311,7 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
 
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color.fromRGBO(20, 20, 20, 1),
-              padding: EdgeInsets.symmetric(horizontal: 35, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(38)),
               ),
