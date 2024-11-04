@@ -115,7 +115,9 @@ class _AppInitializerState extends State<AppInitializer> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: CircularProgressIndicator(), // Loading spinner while checking state
+        child: Center(
+          child: Text("Loading App"),        
+        ), // while checking state
       ),
     );
   }
