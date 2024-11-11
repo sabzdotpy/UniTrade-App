@@ -2,7 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
+import '../utils/fetch.dart';
 
 class SellPage extends StatefulWidget {
   const SellPage({super.key});
@@ -101,12 +101,12 @@ class _SellPageState extends State<SellPage> {
 
   
   void _onSubmitted(String value) {
-    if (value.isEmpty) {
-        print.i("Search term is empty. Showing all products");
-    }
-    else {
-        print.i("Searching for $value");
-    }
+  //   if (value.isEmpty) {
+  //       print.i("Search term is empty. Showing all products");
+  //   }
+  //   else {
+  //       print.i("Searching for $value");
+  //   }
   }
 
 
@@ -121,8 +121,7 @@ class _SellPageState extends State<SellPage> {
                   padding: const EdgeInsets.only(top: 30, bottom: 6, left: 20, right: 20),
                   child: TextField(
                         controller: productNameController,
-                        onSubmitted:
-                            _onSubmitted,
+                        onSubmitted: (value) {},
                         textInputAction: TextInputAction.search,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(
@@ -159,8 +158,9 @@ class _SellPageState extends State<SellPage> {
                           keyboardType: TextInputType.multiline,
                           maxLines: null,
                           controller: productDescController,
-                          onSubmitted:
-                              _onSubmitted,
+                          onSubmitted: (value) {
+                            
+                          },
                           textInputAction: TextInputAction.search,
                           decoration: InputDecoration(
                             prefixIcon: const Icon(
@@ -408,8 +408,7 @@ class _SellPageState extends State<SellPage> {
                           flex: 4,
                           child: TextField(
                             controller: productPriceController,
-                            onSubmitted:
-                                _onSubmitted,
+                            onSubmitted: (value) {},
                             textInputAction: TextInputAction.search,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10),
@@ -608,8 +607,17 @@ class _SellPageState extends State<SellPage> {
                           vertical: 12,
                         )),
                     ),
-                    onPressed: () {
-                      // Handle button press
+                    onPressed: () async {
+                      dynamic res = await postProduct(
+                        "Paalmadu",
+                        "vasanth",
+                        4000,
+                        "",
+                        "Daily Essentials",
+                        "6702ad746c6ff2fba7c36ca9"
+                      );
+
+                      print.i(res);
                     },
                     child: const Text(
                       'POST',

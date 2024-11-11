@@ -116,7 +116,7 @@ class _AppInitializerState extends State<AppInitializer> {
     return const Scaffold(
       body: Center(
         child: Center(
-          child: Text("Loading App"),        
+          child: Text("Loading App")
         ), // while checking state
       ),
     );

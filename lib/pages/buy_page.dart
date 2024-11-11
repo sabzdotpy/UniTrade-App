@@ -1,6 +1,7 @@
 import "dart:ui";
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:test_flutter/pages/product_page.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
 
@@ -70,9 +71,13 @@ class _BuyPageState extends State<BuyPage> {
         print.i("Found ${buyPageItems.length} items.");
       });
     } catch (e) {
-      print.i('Error fetching products: $e');
+      print.i('Error: $e');
       setState(() {
-        status = "Error!";
+        if (e.toString() == "Connection timed out") {
+          status = "Server is not responding. Please try again later.";
+        } else {
+          status = "Error while fetching products.";
+        }
       });
     }
   }
@@ -361,6 +366,12 @@ class _BuyPageState extends State<BuyPage> {
                         children: _createCategoriesButtons()),
                   ),
                 ),
+                Container(
+                  child: ElevatedButton(
+                    onPressed: () { fetchAllProducts(); },
+                    child: const Text("Refresh"),
+                  )
+                ),
                 Expanded(
                     child: Container(
                     width: MediaQuery.of(context).size.width,
@@ -380,12 +391,25 @@ class _BuyPageState extends State<BuyPage> {
                               );
                             },
                           )
-                        : Center(
-                            child: (Text(
-                              (status != "") ? "No products found. Request instead." : status,
-                              style: const TextStyle(fontSize: 12),
-                            )),
-                          )))
+                        : (status == "Loading...") ?
+                            const Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 40,),
+                                    Text("Loading..."),
+                                  ],
+                                ),
+                              ),
+                            ) : 
+                            Center(
+                              child: (Text(
+                                (status == "") ? "No products found. Request instead." : status,
+                                style: const TextStyle(fontSize: 12),
+                              )),
+                            )))
               ],
             )
           )
@@ -416,6 +440,7 @@ class BuyPageItem extends StatelessWidget {
       onTap: () {
         print.i(product.title);
         print.i(product.imageURL);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductPage()));
       },
       child: Container(
         height: 100,
