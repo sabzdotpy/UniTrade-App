@@ -62,7 +62,8 @@ class _BuyPageState extends State<BuyPage> {
               price: product['price'], 
               postedAt: product['postedAt'], 
               rating: product['rating'], 
-              imageURL: product['imageURL']
+              imageURL: product['imageURL'],
+              id: product['_id']
             )
           );
         }
@@ -153,20 +154,6 @@ class _BuyPageState extends State<BuyPage> {
     }
 
     return buttonList;
-  }
-
-  void addProduct() {
-    print.i("Adding new item");
-    setState(() {
-      buyPageItems.add(BuyPageProduct(
-          title: "Parker Pen",
-          description: "rich pen",
-          imageURL: "https://conference.nbasbl.org/wp-content/uploads/2022/05/placeholder-image-1.png",
-          category: "Daily Essentials",
-          price: 45,
-          rating: 5,
-          postedAt: "2 days ago"));
-    });
   }
 
   void showAllCategoriesDialog(BuildContext context) {
@@ -437,13 +424,12 @@ class BuyPageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print.i(product.title);
-        print.i(product.imageURL);
+        print.i(product.id);
         Navigator.push(
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) => ProductPage(
-              // details of the product.
+              product: product,
             ),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               const begin = Offset(1.0, 0.0);
@@ -608,14 +594,16 @@ class BuyPageProduct {
   final num rating; // supports both int and double, will be coerced to double during init.
   final num price;
   final String postedAt;
+  final String id;
 
-  BuyPageProduct(
-      {required this.title,
-      required this.description,
-      required this.category,
-      required this.price,
-      required this.postedAt,
-      required num rating,
-      required this.imageURL})
-      : rating = rating.toDouble();
+  BuyPageProduct({
+    required this.title,
+    required this.description,
+    required this.category,
+    required this.price,
+    required this.postedAt,
+    required num rating,
+    required this.imageURL,
+    required this.id,
+  }) : rating = rating.toDouble();
 }

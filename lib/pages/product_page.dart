@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:test_flutter/pages/buy_page.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+  final BuyPageProduct product;
+
+  const ProductPage({super.key, required this.product});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -16,7 +19,7 @@ class _ProductPageState extends State<ProductPage> {
       {"price": 300, "quantity": 5, "postedAt": DateTime.now().subtract(const Duration(days: 1)), "negotiable": true},
       {"price": 1200, "quantity": 3, "postedAt": DateTime.now().subtract(const Duration(days: 10)), "negotiable": false},
     ];
-
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,47 +27,74 @@ class _ProductPageState extends State<ProductPage> {
             title: const Text("Product Details"),
             elevation: 1,
         ),
-        body: Expanded(
-            child: Column(
-                // mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,                
-                children: [
-                    Container(
-                        width: double.infinity,
-                        height: 200,
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            border: Border.all(color: Colors.blue, width: 2)
+        body: Column(
+          children: [
+            Expanded(
+                child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,                
+                    children: [
+                        Container(
+                            width: double.infinity,
+                            height: 250,
+                            decoration: const BoxDecoration(
+                                color: Color.fromARGB(255, 25, 25, 25),
+                            ),
+                            child: Center(child: Text("Product images here")),
                         ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-                      child: Text(
-                          "Arduino UNO v1",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold
-                          ),
-                      ),
-                    ),
-                    Row(
-                        children: [
-                            CircleAvatar(backgroundColor: Colors.white,),
-                            Text("Username"),
-                            Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                                    color: Colors.green[800]
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 15),
+                                child: Text(
+                                    widget.product.title,
+                                    style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.w800
+                                    ),
                                 ),
-                                padding: EdgeInsets.symmetric( horizontal: 6, vertical: 2 ),
-                                child: Text("4.8"),
-                            )
-                        ],
-                    ),
-                    Text("Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quis non magnam facere in et nemo porro placeat? Eum in ex quidem dolor repudiandae consequuntur consequatur, dolore ipsum. Inventore perferendis adipisci tempore similique vel, distinctio enim ex laborum provident dolorem. Ducimus magni, consequuntur excepturi quas molestiae blanditiis impedit."),
-                    // ProductGrid(),
-                ],
-            )
+                              ),
+                              Wrap(
+                                direction: Axis.horizontal,
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 8,
+                                children: [
+                                    CircleAvatar(backgroundColor: Colors.white,),
+                                    Text("Username", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, ),),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                                            color: Colors.green[800]
+                                        ),
+                                        padding: EdgeInsets.symmetric( horizontal: 6, vertical: 2 ),
+                                        child: Text(widget.product.rating.toString()),
+                                    )
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text("Product Description from the seller", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                                    Text(widget.product.description, style: TextStyle(color: Color.fromRGBO(255, 255, 255, .8)),),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // ProductGrid(),
+                    ],
+                )
+            ),
+          ],
         ),
     );
   }
