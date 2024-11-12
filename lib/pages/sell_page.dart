@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/fetch.dart';
 
 class SellPage extends StatefulWidget {
@@ -22,45 +25,47 @@ class _SellPageState extends State<SellPage> {
 
   int quantity = 1;
   bool priceNegotiable = false;
-  String selectedCategory = "iot";
+  String selectedCategory = "IOT Components";
+
+  String userEmail = "";
 
   final Map<String, List<DropdownMenuItem>> subCategories = {
-    "iot": [
-      const DropdownMenuItem(value: "sensors", child: Text("Sensors"),),
-      const DropdownMenuItem(value: "actuators", child: Text("Actuators"),),
-      const DropdownMenuItem(value: "displays", child: Text("Displays"),),
-      const DropdownMenuItem(value: "connectors", child: Text("Connectors"),),
-      const DropdownMenuItem(value: "power_sources", child: Text("Power Sources"),),
+    "IOT Components": [
+      const DropdownMenuItem(value: "Sensors", child: Text("Sensors"),),
+      const DropdownMenuItem(value: "Actuators", child: Text("Actuators"),),
+      const DropdownMenuItem(value: "Displays", child: Text("Displays"),),
+      const DropdownMenuItem(value: "Connectors", child: Text("Connectors"),),
+      const DropdownMenuItem(value: "Power Sources", child: Text("Power Sources"),),
     ],
-    "mobile_accessories": [
-      const DropdownMenuItem(value: "chargers", child: Text("Chargers"),),
-      const DropdownMenuItem(value: "power_banks", child: Text("Power Banks"),),
-      const DropdownMenuItem(value: "data_cable", child: Text("Data Cable"),),
-      const DropdownMenuItem(value: "backcase", child: Text("Backcase"),),
-      const DropdownMenuItem(value: "finger_sleeves", child: Text("Finger Sleeves"),),
+    "Mobile Accessories": [
+      const DropdownMenuItem(value: "Chargers", child: Text("Chargers"),),
+      const DropdownMenuItem(value: "Power Banks", child: Text("Power Banks"),),
+      const DropdownMenuItem(value: "Data Cable", child: Text("Data Cable"),),
+      const DropdownMenuItem(value: "Backcase", child: Text("Backcase"),),
+      const DropdownMenuItem(value: "Finger Sleeves", child: Text("Finger Sleeves"),),
     ],
-    "desktop_peripherals": [
-      const DropdownMenuItem(value: "mouse", child: Text("Mouse"),),
-      const DropdownMenuItem(value: "keyboard", child: Text("Keyboard"),),
-      const DropdownMenuItem(value: "pendrive", child: Text("Pendrives"),),
-      const DropdownMenuItem(value: "cables", child: Text("Cables"),),
-      const DropdownMenuItem(value: "adapters", child: Text("Adapters"),),
-      const DropdownMenuItem(value: "laptop_stand", child: Text("Laptop Stand"),),
+    "Desktop Peripherals": [
+      const DropdownMenuItem(value: "Mouse", child: Text("Mouse"),),
+      const DropdownMenuItem(value: "Keyboard", child: Text("Keyboard"),),
+      const DropdownMenuItem(value: "Pendrive", child: Text("Pendrives"),),
+      const DropdownMenuItem(value: "Cables", child: Text("Cables"),),
+      const DropdownMenuItem(value: "Adapters", child: Text("Adapters"),),
+      const DropdownMenuItem(value: "Laptop Stand", child: Text("Laptop Stand"),),
     ],
-    "daily_essentials":  [
-      const DropdownMenuItem(value: "perfume", child: Text("Perfume"),),
-      const DropdownMenuItem(value: "beauty_accessories", child: Text("Beauty Accessories"),),
-      const DropdownMenuItem(value: "watches", child: Text("Watches"),),
-      const DropdownMenuItem(value: "classroom_accessories", child: Text("Classroom Accessories"),),
+    "Daily Essentials":  [
+      const DropdownMenuItem(value: "Perfume", child: Text("Perfume"),),
+      const DropdownMenuItem(value: "Beauty Accessories", child: Text("Beauty Accessories"),),
+      const DropdownMenuItem(value: "Watches", child: Text("Watches"),),
+      const DropdownMenuItem(value: "Classroom Accessories", child: Text("Classroom Accessories"),),
     ], 
-    "headphones": [
-      const DropdownMenuItem(value: "in_ear_earphones", child: Text("In-Ear Earphones"),),
-      const DropdownMenuItem(value: "headphones1", child: Text("Headphones"),),
-      const DropdownMenuItem(value: "wireless_earbuds", child: Text("Wireless Earbuds"),),
+    "Headphones": [
+      const DropdownMenuItem(value: "In-Ear Earphones", child: Text("In-Ear Earphones"),),
+      const DropdownMenuItem(value: "Headphones", child: Text("Headphones"),),
+      const DropdownMenuItem(value: "Wireless Earbuds", child: Text("Wireless Earbuds"),),
     ], 
-    "speakers": [
-      const DropdownMenuItem(value: "wired_speakers", child: Text("Wired Speakers"),),
-      const DropdownMenuItem(value: "bluetooth_speakers", child: Text("Bluetooth Speakers"),),
+    "Speakers": [
+      const DropdownMenuItem(value: "Wired Speakers", child: Text("Wired Speakers"),),
+      const DropdownMenuItem(value: "Bluetooth Speakers", child: Text("Bluetooth Speakers"),),
     ], 
   };
 
@@ -72,6 +77,14 @@ class _SellPageState extends State<SellPage> {
     super.initState();
     print.i("Buy Page Initialized.");
     fetchAllProducts();
+    User? user = FirebaseAuth.instance.currentUser;
+      if (user?.email != null) {
+        setState(() {
+          userEmail = user!.email!;
+        });
+      } else {
+        print.e("User is not found, and we are already in sell page.");
+      }
   }
 
   Future<void> _pickImages() async {
@@ -197,12 +210,12 @@ class _SellPageState extends State<SellPage> {
                       borderRadius: BorderRadius.circular(12),
                       color: const Color.fromRGBO(255, 255, 255, .1)
                     ),
-                    child: Padding(
+                    child: Container(
                       padding: const EdgeInsets.all(10.0),
                       child: Row(
                         children: [
                           const Expanded(
-                            flex: 7,
+                            flex: 5,
                             child: Padding(
                               padding: EdgeInsets.only(left: 6),
                               child: Text(
@@ -274,7 +287,7 @@ class _SellPageState extends State<SellPage> {
                   ),
                 ),
                 
-                Padding(
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                   child: Container(
                     width: double.infinity,
@@ -287,7 +300,7 @@ class _SellPageState extends State<SellPage> {
                       children: [
                         // "Product Category" text (70% width)
                         const Expanded(
-                          flex: 6,
+                          flex: 5,
                           child: Text(
                             'Product Category',
                             style: TextStyle(fontSize: 16),
@@ -295,9 +308,10 @@ class _SellPageState extends State<SellPage> {
                         ),
                         // Dropdown (30% width)
                         Expanded(
-                          flex: 4,
+                          flex: 5,
                           child: DropdownButtonFormField(
-                            value: "iot",
+                            
+                            value: "IOT Components",
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -314,12 +328,12 @@ class _SellPageState extends State<SellPage> {
                               contentPadding: const EdgeInsets.only(left: 12, right: 6),
                             ),
                             items: const [
-                              DropdownMenuItem(value: 'iot', child: Text('IoT Components')),
-                              DropdownMenuItem(value: 'mobile_accessories', child: Text('Mobile Accessories')),
-                              DropdownMenuItem(value: 'desktop_peripherals', child: Text('Desktop Peripherals')),
-                              DropdownMenuItem(value: 'daily_essentials', child: Text('Daily Essentials')),
-                              DropdownMenuItem(value: 'headphones', child: Text('Headphones')),
-                              DropdownMenuItem(value: 'speakers', child: Text('Speakers')),
+                              DropdownMenuItem(value: 'IOT Components', child: Text('IoT Components')),
+                              DropdownMenuItem(value: 'Mobile Accessories', child: Text('Mobile Accessories')),
+                              DropdownMenuItem(value: 'Desktop Peripherals', child: Text('Desktop Peripherals')),
+                              DropdownMenuItem(value: 'Daily Essentials', child: Text('Daily Essentials')),
+                              DropdownMenuItem(value: 'Headphones', child: Text('Headphones')),
+                              DropdownMenuItem(value: 'Speakers', child: Text('Speakers')),
                             ],
                             onChanged: (value) {
                               print.i("$value Selected.");
@@ -334,7 +348,7 @@ class _SellPageState extends State<SellPage> {
                   )
                 ),
             
-                Padding(
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                   child: Container(
                     width: double.infinity,
@@ -347,7 +361,7 @@ class _SellPageState extends State<SellPage> {
                       children: [
                         // "Product Category" text (70% width)
                         const Expanded(
-                          flex: 6,
+                          flex: 5,
                           child: Text(
                             'Product Subcategory',
                             style: TextStyle(fontSize: 16),
@@ -355,7 +369,7 @@ class _SellPageState extends State<SellPage> {
                         ),
                         // Dropdown (30% width)
                         Expanded(
-                          flex: 4,
+                          flex: 5,
                           child: DropdownButtonFormField(
                             value: subCategories[selectedCategory]!.first.value,
                             decoration: InputDecoration(
@@ -384,7 +398,7 @@ class _SellPageState extends State<SellPage> {
                   )
                 ),
             
-                Padding(
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                   child: Container(
                     width: double.infinity,
@@ -397,15 +411,14 @@ class _SellPageState extends State<SellPage> {
                       children: [
                         // "Product Category" text (70% width)
                         const Expanded(
-                          flex: 6,
+                          flex: 5,
                           child: Text(
                             'Price',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
-                        // Dropdown (30% width)
                         Expanded(
-                          flex: 4,
+                          flex: 5,
                           child: TextField(
                             controller: productPriceController,
                             onSubmitted: (value) {},
@@ -439,7 +452,7 @@ class _SellPageState extends State<SellPage> {
                   )
                 ),
             
-                Padding(
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
                   child: Container(
                     width: double.infinity,
@@ -609,12 +622,12 @@ class _SellPageState extends State<SellPage> {
                     ),
                     onPressed: () async {
                       dynamic res = await postProduct(
-                        "Paalmadu",
-                        "vasanth",
-                        4000,
+                        productNameController.text,
+                        productDescController.text,
+                        int.parse(productPriceController.text),
                         "",
-                        "Daily Essentials",
-                        "6702ad746c6ff2fba7c36ca9"
+                        selectedCategory,
+                        userEmail
                       );
 
                       print.i(res);
