@@ -440,11 +440,13 @@ class BuyPageItem extends StatelessWidget {
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                      product.imageURL,
-                      width: 85,
-                      height: 85,
-                      fit: BoxFit.cover)),
+                  child: Text("Image")
+                  // Image.network(
+                  //     product.imageURL,
+                  //     width: 85,
+                  //     height: 85,
+                  //     fit: BoxFit.cover)
+                      ),
             ),
             const SizedBox(width: 10),
             Column(

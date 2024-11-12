@@ -13,9 +13,11 @@ Future< Map<String, dynamic>> fetchData() async {
   print("Received response from server.");
   print(res);
   if (response.statusCode == 200) {
+    print("Successful response while fetching products.");
     // If the server returns a successful response, parse the JSON data
     return res;
   } else {
+    print("Errored response while fetching products.");
     // If the server response is not successful, throw an error
     throw Exception('Failed to load data');
   }
