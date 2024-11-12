@@ -1,6 +1,7 @@
 import "dart:ui";
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:test_flutter/pages/product_page.dart';
 
 import 'package:test_flutter/utils/fetch.dart';
 
@@ -290,7 +291,6 @@ class _BuyPageState extends State<BuyPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -410,12 +410,56 @@ class BuyPageItem extends StatelessWidget {
 
   Logger print = Logger(printer: PrettyPrinter());
 
+  
+  String extendedTimeAgo(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 365) {
+      return "${(difference.inDays / 365).floor()} year${(difference.inDays / 365).floor() > 1 ? 's' : ''} ago";
+    } else if (difference.inDays > 30) {
+      return "${(difference.inDays / 30).floor()} month${(difference.inDays / 30).floor() > 1 ? 's' : ''} ago";
+    } else if (difference.inDays > 0) {
+      return "${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago";
+    } else if (difference.inHours > 0) {
+      return "${difference.inHours} hour${difference.inHours > 1 ? 's' : ''} ago";
+    } else if (difference.inMinutes > 0) {
+      return "${difference.inMinutes} minute${difference.inMinutes > 1 ? 's' : ''} ago";
+    } else if (difference.inSeconds > 0) {
+      return "${difference.inSeconds} second${difference.inSeconds > 1 ? 's' : ''} ago";
+    } else {
+      return "just now";
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         print.i(product.title);
         print.i(product.imageURL);
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => ProductPage(
+              // details of the product.
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = Offset(1.0, 0.0);
+              const end = Offset.zero;
+              const curve = Curves.ease;
+
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+          ),
+        );
       },
       child: Container(
         height: 100,
@@ -476,7 +520,7 @@ class BuyPageItem extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        product.postedAt,
+                        extendedTimeAgo( DateTime.parse(product.postedAt) ),
                         style: TextStyle(
                             fontSize: 10, color: Colors.white.withOpacity(.4)),
                       ),

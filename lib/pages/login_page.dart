@@ -5,6 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'dart:math' as math;
+import '../utils/fetch.dart';
 
 import '../utils/app_images.dart';
 import "./home_page.dart";
@@ -332,10 +333,21 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                   });
                   print.i("Google Sign in successful. Proceeding to main page.");
                   box.put('isLoggedIn', true);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
+
+                  Map res = await loginOrSignup(user.uid, user.email!, user.displayName!);
+                  print.i(res);
+
+                  if (res['code'] == "SUCCESS") {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );  
+                  }
+                  else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Error logging in. Please try again."),
+                    ));
+                  }
                 }
                 else {
                   setState(() {
