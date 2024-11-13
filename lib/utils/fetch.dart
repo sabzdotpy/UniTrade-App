@@ -1,6 +1,13 @@
-import 'dart:convert'; // For json decoding
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
+import 'package:http_parser/http_parser.dart';
+
+import './image_uploader.dart';
 
 Future< Map<String, dynamic>> fetchData() async {
   print("..");
@@ -24,35 +31,59 @@ Future< Map<String, dynamic>> fetchData() async {
 }
 
 
-Future< Map<String, dynamic>> postProduct(String title, String description, num price,  String imageURL, String category, String poster ) async {
+Future< Map<String, dynamic>> postProduct(
+  String title,
+  String description,
+  num price,
+  String category,
+  String posterEmail,
+  List<XFile> productImages
+  ) async {
 
-  print("..");
-  String? url = dotenv.env['SERVER_URL'];
+  print("preparing to post..");
 
-  print("Sending requests to: $url/get-products");
+  final ImageUploader uploader = ImageUploader();
 
-  final response = await http.post(
-    Uri.parse('$url/post-new-product'),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: jsonEncode({
+  
+  try {
+    List<String> imageURLs = await uploader.uploadImages(productImages);
+
+    String? url = dotenv.env['SERVER_URL'];
+    var uri = Uri.parse('$url/post-new-product');
+
+    Map<String, dynamic> requestBody = {
       'title': title,
       'description': description,
-      'price': price,
-      'imageURL': '', // Replace with your image URL
+      'price': price.toString(),
       'category': category,
-      'posterEmail': poster
-    }),
-  );
+      'posterEmail': posterEmail,
+      'productImages': imageURLs,
+    };
 
-  if (response.statusCode == 200) {
-    print('Data sent successfully: ${response.body}');
-    return { "message": "Post added successfully." };
-  } else {
-    print('Failed to send data: ${response.statusCode}');
-    return { "message": "Post adding error." };
+    // Make the POST request
+    var response = await http.post(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      print('Product posted successfully!');
+      print(response.body);
+      return { "message": "Post added successfully!" };
+
+    } else {
+      print('Failed to post product. Status code: ${response.statusCode}');
+      print(response.body);
+      return { "message": "Error in posting product ${response.body}" };
+    }
+  } catch (e) {
+    print('Error posting product: $e');
+    return { "message": "Error in posting product $e" };
   }
+
 }
 
 

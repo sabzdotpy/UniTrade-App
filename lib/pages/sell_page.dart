@@ -16,7 +16,7 @@ class SellPage extends StatefulWidget {
 
 class _SellPageState extends State<SellPage> {
 
-  List<XFile>? productImages = [];
+  late List<XFile> productImages = [];
   final ImagePicker imagePicker = ImagePicker();
 
   final TextEditingController productNameController = TextEditingController();
@@ -88,22 +88,22 @@ class _SellPageState extends State<SellPage> {
   }
 
   Future<void> _pickImages() async {
-    final List<XFile>? images = await imagePicker.pickMultiImage(limit: 10);
-    if (images != null && (productImages!.length + images.length) <= 10) {
+    final List<XFile> images = await imagePicker.pickMultiImage(limit: 10);
+    if ((productImages.length + images.length) <= 10) {
       setState(() {
-        productImages!.addAll(images);
+        productImages.addAll(images);
       });
-    } else if (images != null) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Maximum of 10 images allowed.')),
       );
-    }
+    }   
   }
 
     // Function to delete an image from the list
   void _deleteImage(int index) {
     setState(() {
-      productImages!.removeAt(index);
+      productImages.removeAt(index);
     });
   }
 
@@ -113,15 +113,9 @@ class _SellPageState extends State<SellPage> {
   }
 
   
-  void _onSubmitted(String value) {
-  //   if (value.isEmpty) {
-  //       print.i("Search term is empty. Showing all products");
-  //   }
-  //   else {
-  //       print.i("Searching for $value");
-  //   }
+  Future<void> uploadImages() async {
+    print.i(productImages);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -496,14 +490,14 @@ class _SellPageState extends State<SellPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Align(
+                      const Align(
+                        alignment: Alignment.topLeft,
                         child: Text(
                           "Product Images",
                           style: TextStyle(
                             fontSize: 22,
                           ),
                         ), 
-                        alignment: Alignment.topLeft,
                       ),
                       SizedBox(height: 10,),
                       // Show upload container if no images are added
@@ -566,7 +560,7 @@ class _SellPageState extends State<SellPage> {
                                             shape: BoxShape.rectangle,
                                             borderRadius: BorderRadius.all(Radius.circular(4))
                                           ),
-                                          child: Icon(
+                                          child: const Icon(
                                             Icons.close,
                                             color: Colors.black,
                                             size: 18,
@@ -621,16 +615,26 @@ class _SellPageState extends State<SellPage> {
                         )),
                     ),
                     onPressed: () async {
-                      dynamic res = await postProduct(
-                        productNameController.text,
-                        productDescController.text,
-                        int.parse(productPriceController.text),
-                        "",
-                        selectedCategory,
-                        userEmail
-                      );
-
-                      print.i(res);
+                      if (productImages.isNotEmpty)  {
+                        dynamic res = await postProduct(
+                          productNameController.text,
+                          productDescController.text,
+                          int.parse(productPriceController.text),
+                          selectedCategory,
+                          userEmail,
+                          productImages
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(res['message'])),
+                        );
+                        print.i(res);
+                      }
+                      else {
+                        print.i("No images found. Cannot post.");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Add atleast one image of the product.')),
+                        );
+                      }
                     },
                     child: const Text(
                       'POST',

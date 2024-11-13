@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:test_flutter/pages/product_page.dart';
 import 'package:test_flutter/pages/product_page.dart';
+import 'dart:developer';
 
 import 'package:test_flutter/utils/fetch.dart';
 
@@ -52,19 +53,20 @@ class _BuyPageState extends State<BuyPage> {
       Map<String, dynamic> data = await fetchData();
       setState(() {
         status = "";
+        allBuyPageItems.clear();
         List all = data['products'];
 
         for (var product in all) {
           allBuyPageItems.add(
             BuyPageProduct(
-              title: product['title'], 
-              description: product['description'], 
-              category: product['category'], 
-              price: product['price'], 
-              postedAt: product['postedAt'], 
-              rating: product['rating'], 
-              imageURL: product['imageURL'],
-              id: product['_id']
+              title: product['title'] ?? "TEST Title", 
+              description: product['description'] ?? "TEST Desciprtion",  
+              category: product['category'] ?? "IOT Components", 
+              price: product['price'] ?? 6969, 
+              postedAt: product['postedAt'] ?? "69 hours ago", 
+              rating: product['rating'] ?? 4.0,  
+              imageURL: product['imageURL'] ?? "https://www.google.com",
+              id: product['_id'] ?? "TEST_ID"
             )
           );
         }
@@ -77,6 +79,8 @@ class _BuyPageState extends State<BuyPage> {
       setState(() {
         if (e.toString() == "Connection timed out") {
           status = "Server is not responding. Please try again later.";
+        } else if (e.toString() == "Connection failed") {
+          status = "No internet connection. Could not establish connection to server.";
         } else {
           status = "Error while fetching products.";
         }
@@ -448,7 +452,8 @@ class BuyPageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print.i(product.id);
+        inspect(product);
+        
         Navigator.push(
           context,
           PageRouteBuilder(

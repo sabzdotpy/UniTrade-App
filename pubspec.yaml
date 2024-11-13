@@ -42,6 +42,7 @@ dependencies:
   logger: ^2.4.0
   dropdown_button2: ^2.3.9
   multicast_dns: ^0.3.2+7
+  http_parser: ^4.0.2
 
   # icons
   cupertino_icons: ^1.0.8
