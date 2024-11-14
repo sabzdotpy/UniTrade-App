@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:test_flutter/pages/buy_page.dart';
 
 class ProductPage extends StatefulWidget {
@@ -34,13 +37,23 @@ class _ProductPageState extends State<ProductPage> {
                     // mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,                
                     children: [
-                        Container(
-                            width: double.infinity,
-                            height: 250,
-                            decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 25, 25, 25),
-                            ),
-                            child: Center(child: Text("Product images here")),
+                        ImageSlideshow(
+                          width: double.infinity,
+                          height: 250,
+                          isLoop: true,
+                          indicatorColor: const Color.fromRGBO(255, 255, 255, 1),
+                          indicatorBackgroundColor: const Color.fromRGBO(200, 230, 230, .6),
+                          indicatorRadius: 4,
+                          autoPlayInterval: 5,
+                          children: [
+                            ...widget.product.productImages.map((imageURL) {
+                              return CachedNetworkImage(
+                                imageUrl: imageURL,
+                                placeholder: (context, url) => CircularProgressIndicator(),
+                                errorWidget: (context, url, error) => Icon(Icons.warning),
+                              );
+                            },)
+                          ],
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),

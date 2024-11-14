@@ -65,7 +65,7 @@ class _BuyPageState extends State<BuyPage> {
               price: product['price'] ?? 6969, 
               postedAt: product['postedAt'] ?? "69 hours ago", 
               rating: product['rating'] ?? 4.0,  
-              imageURL: product['imageURL'] ?? "https://www.google.com",
+              productImages: product['productImages'] ?? "https://www.google.com",
               id: product['_id'] ?? "TEST_ID"
             )
           );
@@ -619,7 +619,7 @@ class BuyPageProduct {
   final String title;
   final String description;
   final String category;
-  final String imageURL;
+  final List<dynamic> productImages;
   final num rating; // supports both int and double, will be coerced to double during init.
   final num price;
   final String postedAt;
@@ -632,7 +632,7 @@ class BuyPageProduct {
     required this.price,
     required this.postedAt,
     required num rating,
-    required this.imageURL,
+    required this.productImages,
     required this.id,
   }) : rating = rating.toDouble();
 }

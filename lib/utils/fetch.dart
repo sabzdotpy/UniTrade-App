@@ -43,7 +43,6 @@ Future< Map<String, dynamic>> postProduct(
   print("preparing to post..");
 
   final ImageUploader uploader = ImageUploader();
-
   
   try {
     List<String> imageURLs = await uploader.uploadImages(productImages);
