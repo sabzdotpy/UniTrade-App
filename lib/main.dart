@@ -26,11 +26,22 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("appPreferences");
   
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await initializeFirebase();
 
   runApp(const MyApp());
+}
+
+Future<void> initializeFirebase() async {
+  if (Firebase.apps.isNotEmpty) {
+    print("Firebase is already initialized.");
+    return;
+  }
+
+  await Firebase.initializeApp(
+    name: "unitrade",
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print("Firebase initialized successfully.");
 }
 
 class MyApp extends StatelessWidget {

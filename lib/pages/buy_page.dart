@@ -1,7 +1,8 @@
 import "dart:ui";
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:test_flutter/pages/product_page.dart';
 import 'package:test_flutter/pages/product_page.dart';
 import 'dart:developer';
 
@@ -24,6 +25,7 @@ class _BuyPageState extends State<BuyPage> {
   Logger print = Logger(printer: PrettyPrinter());
 
   String status = "";
+  bool refreshingAllProducts = false;
 
   String activeCategory = "All Categories";
   static List<String> categories = [
@@ -48,6 +50,7 @@ class _BuyPageState extends State<BuyPage> {
       print.i("Getting data from server.");
       setState(() {
         status = "Loading...";
+        refreshingAllProducts = true;
       });
       
       Map<String, dynamic> data = await fetchData();
@@ -66,17 +69,23 @@ class _BuyPageState extends State<BuyPage> {
               postedAt: product['postedAt'] ?? "69 hours ago", 
               rating: product['rating'] ?? 4.0,  
               productImages: product['productImages'] ?? "https://www.google.com",
-              id: product['_id'] ?? "TEST_ID"
+              posterName: product['posterName'] ?? "Anonymous",
+              id: product['_id'] ?? "TEST_ID",
             )
           );
         }
 
         buyPageItems = List.from(allBuyPageItems);
         print.i("Found ${buyPageItems.length} items.");
+
+        setState(() {
+          refreshingAllProducts = false;
+        });
       });
     } catch (e) {
       print.i('Error: $e');
       setState(() {
+        refreshingAllProducts = false;
         if (e.toString() == "Connection timed out") {
           status = "Server is not responding. Please try again later.";
         } else if (e.toString() == "Connection failed") {
@@ -85,6 +94,10 @@ class _BuyPageState extends State<BuyPage> {
           status = "Error while fetching products.";
         }
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(status),
+      ));
     }
   }
 
@@ -357,11 +370,34 @@ class _BuyPageState extends State<BuyPage> {
                         children: _createCategoriesButtons()),
                   ),
                 ),
-                Container(
-                  child: ElevatedButton(
-                    onPressed: () { fetchAllProducts(); },
-                    child: const Text("Refresh"),
-                  )
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(13, 0, 10, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          height: 30,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              fetchAllProducts();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                              backgroundColor: const Color.fromRGBO(255, 255, 255, .13),
+                              foregroundColor: Colors.white, // White text
+                              side: const BorderSide(color: Color.fromRGBO(200, 200, 200, .2)), // Grey border
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // 4px border radius
+                              ),
+                            ),
+                            child: (!refreshingAllProducts) ? Text("Refresh") : CupertinoActivityIndicator()
+                            //  Text( !refreshingAllProducts ? "Refresh" : "Loading"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Expanded(
                     child: Container(
@@ -383,7 +419,7 @@ class _BuyPageState extends State<BuyPage> {
                             },
                           )
                         : (status == "Loading...") ?
-                            const Expanded(
+                            const Center(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
                                 child: Column(
@@ -499,7 +535,12 @@ class BuyPageItem extends StatelessWidget {
               ),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Text("Image")
+                  child: CachedNetworkImage(
+                    imageUrl: product.productImages[0],
+                    width: 85,
+                    height: 85,
+                    fit: BoxFit.cover,
+                  )
                   // Image.network(
                   //     product.imageURL,
                   //     width: 85,
@@ -622,6 +663,7 @@ class BuyPageProduct {
   final List<dynamic> productImages;
   final num rating; // supports both int and double, will be coerced to double during init.
   final num price;
+  final String posterName;
   final String postedAt;
   final String id;
 
@@ -632,6 +674,7 @@ class BuyPageProduct {
     required this.price,
     required this.postedAt,
     required num rating,
+    required this.posterName,
     required this.productImages,
     required this.id,
   }) : rating = rating.toDouble();

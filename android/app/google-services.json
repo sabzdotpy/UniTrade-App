@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "409752601408",
     "project_id": "unitrade-app",
-    "storage_bucket": "unitrade-app.appspot.com"
+    "storage_bucket": "unitrade-app.firebasestorage.app"
   },
   "client": [
     {
@@ -19,6 +19,14 @@
           "android_info": {
             "package_name": "com.sabz.unitrade",
             "certificate_hash": "4b950f62cbae3c5e74dbe6d24046b002db53de20"
+          }
+        },
+        {
+          "client_id": "409752601408-me9r1820kaok1dd2m7132rl7q4tfqltd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sabz.unitrade",
+            "certificate_hash": "7698ebf85321090f5cfcb43810f20059f00e4633"
           }
         },
         {

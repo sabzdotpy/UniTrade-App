@@ -1,11 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 import 'dart:math' as math;
 import '../utils/fetch.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
+import 'dart:async';
 
 import '../utils/app_images.dart';
 import "./home_page.dart";
@@ -91,41 +95,46 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Flexible(
-        // padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: SingleChildScrollView(
-          // padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppImages.get('unitrade.png'),
-                      height: 80,
-                      width: 80,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Text(
-                        "UniTrade",
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontWeight: FontWeight.w900
-                        ),
+      body: SingleChildScrollView(
+        // padding: const EdgeInsets.fromLTRB(0, 50, 0, 100),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    AppImages.get('unitrade.png'),
+                    height: 80,
+                    width: 80,
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "UniTrade",
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w900
                       ),
                     ),
-                  ],
-                ),
-            
-                const SizedBox(height: 10,),
-            
-                const Text(
+                  ),
+                ],
+              ),
+          
+              const SizedBox(height: 10,),
+          
+              GestureDetector(
+                onTap: () {
+                  String? url = dotenv.env['SERVER_URL'];
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Server URL: $url"),
+                  ));
+                },
+                child: const Text(
                   "Sign in to your account",
                   style: TextStyle(
                     fontSize: 30,
@@ -133,86 +142,86 @@ class _LoginPageState extends State<LoginPage> {
                     color: Color.fromRGBO(190, 190, 190, 1),
                   ),
                 ),
-            
-                const SizedBox(height: 50,),
-            
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.82,
-                  // height: 70,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: const Color.fromRGBO(77, 146, 202, 0.6),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    border: Border.all(
-                      color: const Color.fromARGB(126, 171, 215, 252),
-                      width: 2,
-                    )
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon( Icons.info, size: 20, ),
-                      const SizedBox(width: 5,),
-                      Expanded(
-                        child: RichText(
-                          text: TextSpan(
-                            style: const TextStyle(fontSize: 12, color: Colors.white),
-                            children: <TextSpan>[
-                              TextSpan(text: "Since you have chosen $collegeName, only emails ending with "),
-                              TextSpan(text: "@$mail", style: const TextStyle( color: Color.fromARGB(255, 253, 159, 164), fontWeight: FontWeight.w600 )),
-                              const TextSpan(text: " will be permitted."),
-                            ]
-                          ),
-                        ),
-                      ),
-                    ],
+              ),
+          
+              const SizedBox(height: 50,),
+          
+              Container(
+                width: MediaQuery.of(context).size.width * 0.82,
+                // height: 70,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(77, 146, 202, 0.6),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  border: Border.all(
+                    color: const Color.fromARGB(126, 171, 215, 252),
+                    width: 2,
                   )
                 ),
-            
-                const SizedBox(height: 50,),
-                
-                SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail),
-            
-                const SizedBox(height: 50),
-            
-                const Column(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'According to our policy, buying and selling are limited to within your college.',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                    ),
-                    
-                    SizedBox(height: 10,),
-                    
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                    ),
-                    
-                    SizedBox(height: 10,),
-                    
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                    const Icon( Icons.info, size: 20, ),
+                    const SizedBox(width: 5,),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                          children: <TextSpan>[
+                            TextSpan(text: "Since you have chosen $collegeName, only emails ending with "),
+                            TextSpan(text: "@$mail", style: const TextStyle( color: Color.fromARGB(255, 253, 159, 164), fontWeight: FontWeight.w600 )),
+                            const TextSpan(text: " will be permitted."),
+                          ]
+                        ),
                       ),
                     ),
                   ],
-                ),
-            
-              ],
-            ),
+                )
+              ),
+          
+              const SizedBox(height: 50,),
+              
+              SignInButton(googleSignInProvider: _googleSignInProvider, print: print, mail: mail),
+          
+              const SizedBox(height: 50),
+          
+              const Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'According to our policy, buying and selling are limited to within your college.',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                  
+                  SizedBox(height: 10,),
+                  
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'We use your phone\'s location to ensure you\'re on campus, when buying or selling products.',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                  
+                  SizedBox(height: 10,),
+                  
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      'The content posted on the app is moderated. Any violation of our guidelines will result in a ban from the platform.',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                ],
+              ),
+          
+            ],
           ),
         ),
       ),
@@ -318,24 +327,52 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
               ),
             ),
             onPressed: () async {
-              if (isSigningIn) {
-                return;
-              }
+              try {
+                if (isSigningIn) {
+                  return;
+                }
 
-              setState(() {
-                isSigningIn = true;
-              });
-              var box = Hive.box('appPreferences');
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Signing with google. Please wait..."),
+                ));
+
+                setState(() {
+                  isSigningIn = true;
+                });
+                var box = Hive.box('appPreferences');
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Awaiting user from google..."),
+                ));
+
                 User? user = await googleSignInProvider.signInWithGoogle(context, mail);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Google sign in prompt done."),
+                ));
+
                 if (user != null) {
-                  setState(() {
-                    isSigningIn = false;
-                  });
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("WE HAVE USER! signed in successfully: ${user.email}"),
+                  ));
                   print.i("Google Sign in successful. Proceeding to main page.");
                   box.put('isLoggedIn', true);
 
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text("Auth Fetching user details from database. Please wait..."),
+                  ));
+
                   Map res = await loginOrSignup(user.uid, user.email!, user.displayName!);
                   print.i(res);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Server fetching done: Code: ${res['code']}"),
+                  ));
+
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(json.encode(res)),
+                  ));
+
+                  setState(() {
+                    isSigningIn = false;
+                  });
 
                   if (res['code'] == "SUCCESS") {
                     Navigator.pushReplacement(
@@ -344,17 +381,32 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                     );  
                   }
                   else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text("Error logging in. Please try again."),
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text("Error logging in. ${res['message']}."),
                     ));
                   }
                 }
                 else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("NO USER found after google login is closed."),
+                  ));
                   setState(() {
                     isSigningIn = false;
                   });
                   print.w("No user found after Google Login is closed.");
                 }
+              }
+              on ClientException catch (e) {
+                print.e('ClientException: $e');
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Error: $e"),
+                ));
+              } on TimeoutException catch (_) {
+                print.e('Error: Server is not responding. Please try after some time.');
+              } catch (e) {
+                print.e('Unexpected error: $e');
+              }
+              
             },
             child: 
               FittedBox(

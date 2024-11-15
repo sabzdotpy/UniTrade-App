@@ -78,7 +78,7 @@ class _ProductPageState extends State<ProductPage> {
                                 spacing: 8,
                                 children: [
                                     CircleAvatar(backgroundColor: Colors.white,),
-                                    Text("Username", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, ),),
+                                    Text(widget.product.posterName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, ),),
                                     Container(
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.all(Radius.circular(4)),

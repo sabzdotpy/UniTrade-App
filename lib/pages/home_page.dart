@@ -21,14 +21,20 @@ class _HomeScreenState extends State<HomeScreen> {
     const BuyPage(),
     const SellPage(),
     const NotificationsPage(),
-    const ProfilePage()
+    ProfilePage()
   ];
 
   final List<Widget> pagesTitle = [
     const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("BUY", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
     const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("SELL", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
     const Text("Notifications", style: TextStyle( fontWeight: FontWeight.w900 ),),
-    const Text("Profile", style: TextStyle( fontWeight: FontWeight.w900 ),),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text("Profile", style: TextStyle( fontWeight: FontWeight.w900 ),),
+        Icon(Icons.logout),
+      ],
+    ),
   ];
 
   @override

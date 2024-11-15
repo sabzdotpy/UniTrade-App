@@ -54,10 +54,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBrn6yAq8L9SkdB3ExUiXVmS_3c2LcTH38',
-    appId: '1:409752601408:android:e97c2921cc4d2b6787f0a5',
+    appId: '1:409752601408:android:487a0aae57fc34e787f0a5',
     messagingSenderId: '409752601408',
     projectId: 'unitrade-app',
-    storageBucket: 'unitrade-app.appspot.com',
+    storageBucket: 'unitrade-app.firebasestorage.app',
   );
 
 }

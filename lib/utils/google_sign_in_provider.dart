@@ -49,6 +49,11 @@ class GoogleSignInProvider {
       return userCredential.user;
     } catch (e) {
       print.e('Error during Google Sign-In: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+        ),
+      );
       return null;
     }
   }
