@@ -97,6 +97,9 @@ class _ProductPageState extends State<ProductPage> {
                                   children: [
                                     const Text("Product Description from the seller", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
                                     Text(widget.product.description, style: TextStyle(color: Color.fromRGBO(255, 255, 255, .8)),),
+                                    Text(
+                                      "Contact: ${widget.product.contact}"
+                                    )
                                   ],
                                 ),
                               ),

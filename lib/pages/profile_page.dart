@@ -53,6 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
             description: product['description'],
             category: product['category'],
             price: product['price'],
+            contact: product['contact'],
             postedAt: product['postedAt'],
             rating: product['rating'],
             productImages: product['productImages'],

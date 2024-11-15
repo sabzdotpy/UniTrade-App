@@ -1,10 +1,13 @@
 import 'dart:ffi';
 
+import 'package:flutter/cupertino.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:test_flutter/pages/buy_page.dart';
+import 'package:test_flutter/pages/product_page.dart';
 import '../utils/fetch.dart';
 
 class SellPage extends StatefulWidget {
@@ -16,12 +19,15 @@ class SellPage extends StatefulWidget {
 
 class _SellPageState extends State<SellPage> {
 
+  bool postingInProgress = false;
+
   late List<XFile> productImages = [];
   final ImagePicker imagePicker = ImagePicker();
 
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController productDescController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
+  final TextEditingController contactController = TextEditingController();
 
   int quantity = 1;
   bool priceNegotiable = false;
@@ -460,25 +466,39 @@ class _SellPageState extends State<SellPage> {
                         const Expanded(
                           flex: 6,
                           child: Text(
-                            'Price Negotiable?',
+                            'Contact Number',
                             style: TextStyle(fontSize: 16),
                           ),
                         ),
                         // Dropdown (30% width)
                         Expanded(
-                          flex: 1,
-                          child: Switch(
-                            value: priceNegotiable,
-                            onChanged: (bool value) {
-                              setState(() {
-                                priceNegotiable = value;
-                              });
-                            },
-                            activeColor: const Color.fromARGB(255, 61, 160, 241),
-                            inactiveThumbColor: Colors.white,
-                            inactiveTrackColor: Colors.grey,
-                             
-                          ),
+                          flex: 6,
+                          child: TextField(
+                            controller: contactController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(color: Color.fromRGBO(255, 255, 255, 0.1)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(color: Color.fromRGBO(255, 255, 255, 0.1)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(color: Color.fromRGBO(255, 255, 255, 0.1)),
+                              ),
+                              filled: true,
+                              hintStyle: const TextStyle(
+                                  color: Color.fromRGBO(255, 255, 255, 0.5),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400),
+                              hintText: "Enter your number",
+                              fillColor: Colors.white.withOpacity(0.01),
+                            ),
+                          )
                         ),
                       ],
                     )
@@ -615,34 +635,79 @@ class _SellPageState extends State<SellPage> {
                         )),
                     ),
                     onPressed: () async {
-                      if (productImages.isNotEmpty)  {
-                        dynamic res = await postProduct(
-                          productNameController.text,
-                          productDescController.text,
-                          int.parse(productPriceController.text),
-                          selectedCategory,
-                          userEmail,
-                          productImages
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(res['message'])),
-                        );
-                        print.i(res);
+
+                      try {
+                        if (postingInProgress) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Posting in progress. Please wait...")),
+                          );
+                          return;
+                        }
+
+                        setState(() {
+                          postingInProgress = true;
+                        });
+                        if (productImages.isNotEmpty)  {
+                          dynamic res = await postProduct(
+                            productNameController.text,
+                            productDescController.text,
+                            int.parse(productPriceController.text),
+                            contactController.text,
+                            selectedCategory,
+                            userEmail,
+                            productImages
+                          );
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   SnackBar(content: Text("${res['message']} - ${res['product']}")),
+                          // );
+                          var product = res['product'];
+                          Navigator.pushReplacement(
+                            context,  
+                            MaterialPageRoute(
+                              builder: (context) => ProductPage( 
+                                product: BuyPageProduct(
+                                  title: product['title'], 
+                                  description: product['description'], 
+                                  category: product['category'], 
+                                  price: product['price'], 
+                                  contact: product['contact'],
+                                  postedAt: product['postedAt'], 
+                                  rating: product['rating'], 
+                                  posterName: product['posterName'], 
+                                  productImages: product['productImages'], 
+                                  id: product['_id']), 
+                                )));
+                          print.i(res);
+                        }
+                        else {
+                          print.i("No images found. Cannot post.");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Add atleast one image of the product.')),
+                          );
+                        }
+                        setState(() {
+                          postingInProgress = false;
+                        });
                       }
-                      else {
-                        print.i("No images found. Cannot post.");
+                      catch (err) {
+                        setState(() {
+                          postingInProgress = false;
+                        });
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Add atleast one image of the product.')),
+                          SnackBar(content: Text("$err")),
                         );
                       }
                     },
-                    child: const Text(
-                      'POST',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
-                    ),
+                    child: 
+                      (!postingInProgress)
+                      ?
+                      const Text(
+                        'POST',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      ) : const CupertinoActivityIndicator()
                   ),
                 ),
 

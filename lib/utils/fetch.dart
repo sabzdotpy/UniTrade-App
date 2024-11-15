@@ -59,6 +59,7 @@ Future< Map<String, dynamic>> postProduct(
   String title,
   String description,
   num price,
+  String contact,
   String category,
   String posterEmail,
   List<XFile> productImages
@@ -79,6 +80,7 @@ Future< Map<String, dynamic>> postProduct(
       'title': title,
       'description': description,
       'price': price.toString(),
+      'contact': contact,
       'category': category,
       'posterEmail': posterEmail,
       'productImages': imageURLs,
@@ -97,7 +99,8 @@ Future< Map<String, dynamic>> postProduct(
     if (response.statusCode == 200) {
       print('Product posted successfully!');
       print(response.body);
-      return { "message": "Post added successfully!" };
+      return { "message": "Post added successfully!", "product":  json.decode(response.body)['product'] };
+
 
     } else {
       print('Failed to post product. Status code: ${response.statusCode}');
