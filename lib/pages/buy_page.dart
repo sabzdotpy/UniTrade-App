@@ -76,8 +76,17 @@ class _BuyPageState extends State<BuyPage> {
           );
         }
 
-        buyPageItems = List.from(allBuyPageItems);
-        print.i("Found ${buyPageItems.length} items.");
+        if (activeCategory == "All Categories") {
+          print.i("Found ${buyPageItems.length} items.");
+          setState(() {
+            buyPageItems = List.from(allBuyPageItems);
+          });
+        }
+        else {
+          filterProductsByCategory(activeCategory);
+        }
+
+        
 
         setState(() {
           refreshingAllProducts = false;
@@ -676,9 +685,9 @@ class BuyPageProduct {
     required this.price,
     required this.postedAt,
     required num rating,
-    required num contact,
+    required this.contact,
     required this.posterName,
     required this.productImages,
     required this.id,
-  }) : rating = rating.toDouble(), contact = contact.toString();
+  }) : rating = rating.toDouble();
 }

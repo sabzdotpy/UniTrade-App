@@ -661,7 +661,7 @@ class _SellPageState extends State<SellPage> {
                           //   SnackBar(content: Text("${res['message']} - ${res['product']}")),
                           // );
                           var product = res['product'];
-                          Navigator.pushReplacement(
+                          Navigator.push(
                             context,  
                             MaterialPageRoute(
                               builder: (context) => ProductPage( 

@@ -37,23 +37,32 @@ class _ProductPageState extends State<ProductPage> {
                     // mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,                
                     children: [
-                        ImageSlideshow(
+                        Container(
                           width: double.infinity,
                           height: 250,
-                          isLoop: true,
-                          indicatorColor: const Color.fromRGBO(255, 255, 255, 1),
-                          indicatorBackgroundColor: const Color.fromRGBO(200, 230, 230, .6),
-                          indicatorRadius: 4,
-                          autoPlayInterval: 5,
-                          children: [
-                            ...widget.product.productImages.map((imageURL) {
-                              return CachedNetworkImage(
-                                imageUrl: imageURL,
-                                placeholder: (context, url) => CircularProgressIndicator(),
-                                errorWidget: (context, url, error) => Icon(Icons.warning),
-                              );
-                            },)
-                          ],
+                          child: SingleChildScrollView(
+                            child: ImageSlideshow(
+                              width: double.infinity,
+                              height: 250,
+                              isLoop: true,
+                              indicatorColor: const Color.fromRGBO(255, 255, 255, 1),
+                              indicatorBackgroundColor: const Color.fromRGBO(200, 230, 230, .6),
+                              indicatorRadius: 4,
+                              onPageChanged: (value) {
+                                print('Page changed: $value');
+                              },
+                              autoPlayInterval: 3000,
+                              children: [
+                                ...widget.product.productImages.map((imageURL) {
+                                  return CachedNetworkImage(
+                                    imageUrl: imageURL,
+                                    placeholder: (context, url) => CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) => Icon(Icons.warning),
+                                  );
+                                },)
+                              ],
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
