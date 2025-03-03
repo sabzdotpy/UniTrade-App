@@ -117,6 +117,7 @@ app.*.map.json
 custom_apk
 apk_history
 apk_history/*
+keystore
 private_keystore
 private_keystore/*
 *.hprof
