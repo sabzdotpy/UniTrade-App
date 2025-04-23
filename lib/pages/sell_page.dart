@@ -675,8 +675,11 @@ class _SellPageState extends State<SellPage> {
                                   rating: product['rating'], 
                                   posterName: product['posterName'], 
                                   productImages: product['productImages'], 
-                                  id: product['_id']), 
-                                )));
+                                  id: product['_id']
+                                ), 
+                              )
+                            )
+                          );
                           print.i(res);
                         }
                         else {

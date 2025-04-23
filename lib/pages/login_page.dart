@@ -340,35 +340,35 @@ class _SignInButtonState extends State<SignInButton> with TickerProviderStateMix
                   isSigningIn = true;
                 });
                 var box = Hive.box('appPreferences');
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Awaiting user from google..."),
-                ));
+                // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                //   content: Text("Awaiting user from google..."),
+                // ));
 
                 User? user = await googleSignInProvider.signInWithGoogle(context, mail);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Google sign in prompt done."),
-                ));
+                // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                //   content: Text("Google sign in prompt done."),
+                // ));
 
                 if (user != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("WE HAVE USER! signed in successfully: ${user.email}"),
-                  ));
+                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //   content: Text("WE HAVE USER! signed in successfully: ${user.email}"),
+                  // ));
                   print.i("Google Sign in successful. Proceeding to main page.");
                   box.put('isLoggedIn', true);
 
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text("Auth Fetching user details from database. Please wait..."),
-                  ));
+                  // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  //   content: Text("Auth Fetching user details from database. Please wait..."),
+                  // ));
 
                   Map res = await loginOrSignup(user.uid, user.email!, user.displayName!);
                   print.i(res);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("Server fetching done: Code: ${res['code']}"),
-                  ));
+                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //   content: Text("Server fetching done: Code: ${res['code']}"),
+                  // ));
 
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(json.encode(res)),
-                  ));
+                  // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //   content: Text(json.encode(res)),
+                  // ));
 
                   setState(() {
                     isSigningIn = false;
