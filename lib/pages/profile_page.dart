@@ -38,37 +38,47 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future <void> getUsersProducts() async {
-    setState(() {
-      isLoading = true;
-    });
-    print.w("Getting products by user.");
-    if (user!.email != null) {
-      List<dynamic> res = await fetchProductsByUser(user?.email ?? "fake@mail.com");
-      List<BuyPageProduct> parsedProducts = [];
-
-      res.forEach((product) {
-        parsedProducts.add(
-          BuyPageProduct(
-            title: product['title'],
-            description: product['description'],
-            category: product['category'],
-            price: product['price'],
-            contact: product['contact'],
-            postedAt: product['postedAt'],
-            rating: product['rating'],
-            productImages: product['productImages'],
-            posterName: product['posterName'],
-            id: product['_id']
-          )
-        );
-      },);
-      
+    try {
       setState(() {
-        products = parsedProducts;
+        isLoading = true;
+      });
+      print.w("Getting products by user.");
+      if (user!.email != null) {
+        List<dynamic> res = await fetchProductsByUser(user?.email ?? "fake@mail.com");
+        List<BuyPageProduct> parsedProducts = [];
+
+        res.forEach((product) {
+          parsedProducts.add(
+            BuyPageProduct(
+              title: product['title'],
+              description: product['description'],
+              category: product['category'],
+              price: product['price'],
+              contact: product['contact'],
+              postedAt: product['postedAt'],
+              rating: product['rating'],
+              productImages: product['productImages'],
+              posterName: product['posterName'],
+              id: product['_id']
+            )
+          );
+        },);
+        
+        setState(() {
+          products = parsedProducts;
+          isLoading = false;
+        });
+        print.i(res);
+      }
+    } catch (e) {
+      setState(() {
         isLoading = false;
       });
-      print.i(res);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Error fetching products for profile. Please try again."),
+      ));
     }
+    
   }
 
   // Future<void> fetchProducts() async {
