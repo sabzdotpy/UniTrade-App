@@ -1,9 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:test_flutter/pages/buy_page.dart';
+import 'package:test_flutter/pages/choose_college_page.dart';
 import 'package:test_flutter/pages/notifications_page.dart';
 import 'package:test_flutter/pages/profile_page.dart';
 import 'package:test_flutter/pages/sell_page.dart';
+import 'package:test_flutter/utils/google_sign_in_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,7 +35,35 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text("Profile", style: TextStyle( fontWeight: FontWeight.w900 ),),
-        Icon(Icons.logout),
+        Builder(
+          builder: (context) {
+            return GestureDetector(
+              onTap: () async {
+                print("Logging out user.");
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Logging you out.")),
+                );
+
+                try {
+                  await FirebaseAuth.instance.signOut();
+                  GoogleSignInProvider googleSignInProvider = GoogleSignInProvider();
+                  googleSignInProvider.signOut();
+
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Error logging out. Please try again.")),
+                  );
+                }
+              },
+              child: const Icon(Icons.logout,),
+            );
+          },
+        )
       ],
     ),
   ];
