@@ -193,7 +193,7 @@ class _BuyPageState extends State<BuyPage> {
       context: context,
       barrierDismissible: true,
       barrierLabel: 'Modal',
-      barrierColor: Colors.black.withOpacity(0.7), // Darken overlay
+      barrierColor: const Color.fromRGBO(0, 0, 0, 0.5), // Darken overlay
       transitionDuration: const Duration(milliseconds: 200),
       pageBuilder: (context, animation1, animation2) {
         return Center(
@@ -365,7 +365,7 @@ class _BuyPageState extends State<BuyPage> {
                           fontSize: 14,
                           fontWeight: FontWeight.w400),
                       hintText: "search by product, or categories...",
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Colors.white.withValues(alpha: 0.15),
                     ),
                   ),
                 ),
@@ -393,7 +393,7 @@ class _BuyPageState extends State<BuyPage> {
                               fetchAllProducts();
                             },
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+                              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
                               backgroundColor: const Color.fromRGBO(255, 255, 255, .13),
                               foregroundColor: Colors.white, // White text
                               side: const BorderSide(color: Color.fromRGBO(200, 200, 200, .2)), // Grey border
@@ -401,7 +401,7 @@ class _BuyPageState extends State<BuyPage> {
                                 borderRadius: BorderRadius.circular(8), // 4px border radius
                               ),
                             ),
-                            child: (!refreshingAllProducts) ? Text("Refresh") : CupertinoActivityIndicator()
+                            child: (!refreshingAllProducts) ? const Text("Refresh") : const CupertinoActivityIndicator()
                             //  Text( !refreshingAllProducts ? "Refresh" : "Loading"),
                           ),
                         ),
@@ -581,14 +581,14 @@ class BuyPageItem extends StatelessWidget {
                         child: Text(
                           product.category,
                           style: TextStyle(
-                              fontSize: 10, color: Colors.white.withOpacity(.4)),
+                              fontSize: 10, color: Colors.white.withValues(alpha: .4)),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
                         extendedTimeAgo( DateTime.parse(product.postedAt) ),
                         style: TextStyle(
-                            fontSize: 10, color: Colors.white.withOpacity(.4)),
+                            fontSize: 10, color: Colors.white.withValues(alpha: .4)),
                       ),
                     ],
                   ),
