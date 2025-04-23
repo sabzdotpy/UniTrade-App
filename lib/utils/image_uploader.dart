@@ -19,7 +19,9 @@ class ImageUploader {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(responseData);
-        return jsonResponse['secure_url'];
+        print("Image uploaded successfully!");
+        print(jsonResponse);
+        return jsonResponse['url'];
       } else {
         print('Failed to upload image: ${response.statusCode}');
         return null;
