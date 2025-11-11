@@ -26,7 +26,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("appPreferences");
   
-  print("Fuck my life and initialize Firebase.");
+  print("initialize Firebase.");
   await initializeFirebase();
 
   runApp(const MyApp());
@@ -127,7 +127,6 @@ class _AppInitializerState extends State<AppInitializer> {
         MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
       );
     }
-    
   }
 
   @override

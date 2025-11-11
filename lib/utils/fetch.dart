@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
-import 'package:mime/mime.dart';
-import 'package:path/path.dart';
-import 'package:http_parser/http_parser.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './image_uploader.dart';
 
@@ -14,7 +11,11 @@ Future< Map<String, dynamic>> fetchData() async {
   try {
     print("..");
     String? url = dotenv.env['SERVER_URL'];
+    print("------------------------------------------");
+    print(url);
+    print("------------------------------------------");
 
+  
     print("Sending requests to: $url/get-products");
 
     final response = await http.get(Uri.parse('$url/get-products'));
@@ -24,7 +25,7 @@ Future< Map<String, dynamic>> fetchData() async {
     if (response.statusCode == 200) {
       print("Successful response while fetching products.");
       // If the server returns a successful response, parse the JSON data
-      return res;
+      return res['products'] ?? [];
     } else {
       print("Errored response while fetching products.");
       // If the server response is not successful, throw an error
@@ -143,6 +144,41 @@ Future<Map> loginOrSignup (String uid, String email, String name) async {
     return { "code": "SUCCESS" };
   } else {
     print.w('Signup/Login failed: ${response.statusCode} - ${response.body}');
+    return { "code": "FAILURE", "message": response.body };
+
+  }
+}
+
+
+Future<Map> fetchNotifications () async {
+  Logger print = Logger(printer: PrettyPrinter());
+
+  String? url = dotenv.env['SERVER_URL'];
+  final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        throw Exception('User not authenticated');
+      }
+  final token = await user.getIdToken();
+
+  print.i("Token: $token");
+
+  final response = await http.get(
+    Uri.parse('$url/notifications'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token ?? '',
+    },
+  ).timeout(const Duration(seconds: 10));
+
+
+  print.i("Response Status Code: ${response.statusCode}");
+  print.i("Notifications Body: ${response.body}");
+
+  if (response.statusCode == 200) {
+    print.i('Fetched notifications successfully: ${response.body}');
+    return json.decode(response.body);
+  } else {
+    print.w('Fetching notifications failed: ${response.statusCode} - ${response.body}');
     return { "code": "FAILURE", "message": response.body };
 
   }

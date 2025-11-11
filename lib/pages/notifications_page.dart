@@ -24,12 +24,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   void getNotifications() async {
-    Map<String, dynamic> data = await fetchData();
+    Map<dynamic, dynamic> data = await fetchNotifications();
+    print("Fetched notifications data: $data");
+    print("============================================");
 
     setState(() {
       status = "";
       products.clear();
-      List all = data['products'];
+      List all = data['notifications'];
 
       for (var product in all) {
         products.add(

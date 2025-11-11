@@ -86,8 +86,6 @@ class _BuyPageState extends State<BuyPage> {
           filterProductsByCategory(activeCategory);
         }
 
-        
-
         setState(() {
           refreshingAllProducts = false;
         });

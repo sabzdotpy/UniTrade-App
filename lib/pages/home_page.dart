@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:test_flutter/pages/buy_page.dart';
 import 'package:test_flutter/pages/choose_college_page.dart';
+import 'package:test_flutter/pages/liked_products_page.dart';
 import 'package:test_flutter/pages/notifications_page.dart';
 import 'package:test_flutter/pages/profile_page.dart';
 import 'package:test_flutter/pages/sell_page.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  late Widget pageTitle;
+  late Widget pageTitle = const Text("UniTrade");
 
   final List<Widget> _pages = [
     const BuyPage(),
@@ -27,10 +28,74 @@ class _HomeScreenState extends State<HomeScreen> {
     ProfilePage()
   ];
 
-  final List<Widget> pagesTitle = [
-    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("BUY", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
-    const Row( children: [ Text("UniTrade"), SizedBox(width: 5,), Icon(Icons.circle, size: 16,), SizedBox(width: 5,), Text("SELL", style: TextStyle( fontWeight: FontWeight.w900 ),)], ),
-    const Text("Notifications", style: TextStyle( fontWeight: FontWeight.w900 ),),
+  List<Widget> _getPagesTitle(BuildContext context) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Row(
+            children: [
+              Text("UniTrade"),
+              SizedBox(
+                width: 5,
+              ),
+              Icon(
+                Icons.circle,
+                size: 16,
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                "BUY",
+                style: TextStyle(fontWeight: FontWeight.w900),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.favorite_border),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LikedProductsPage()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.message),
+                onPressed: () {
+                  // Implement search functionality
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    const Row(
+      children: [
+        Text("UniTrade"),
+        SizedBox(
+          width: 5,
+        ),
+        Icon(
+          Icons.circle,
+          size: 16,
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Text(
+          "SELL",
+          style: TextStyle(fontWeight: FontWeight.w900),
+        )
+      ],
+    ),
+    const Text(
+      "Notifications",
+      style: TextStyle(fontWeight: FontWeight.w900),
+    ),
     Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -66,19 +131,24 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     ),
-  ];
+    ];
+  }
 
   @override
   void initState() {
     super.initState();
     print("Init State");
-    pageTitle = pagesTitle[_currentIndex];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        pageTitle = _getPagesTitle(context)[_currentIndex];
+      });
+    });
   }
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      pageTitle = pagesTitle[index];
+      pageTitle = _getPagesTitle(context)[index];
     });
   }
 

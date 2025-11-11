@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     user = FirebaseAuth.instance.currentUser;
-    getUsersProducts();
+    // getUsersProducts();
   }
 
   Future <void> getUsersProducts() async {
@@ -88,28 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     
   }
-
-  // Future<void> fetchProducts() async {
-  //   const String url = "[SERVERURL]/get-products-by-user";
-  //   try {
-  //     final response = await http.get(Uri.parse(url));
-
-  //     if (response.statusCode == 200) {
-  //       final List<dynamic> data = jsonDecode(response.body);
-  //       setState(() {
-  //         products = data.map((json) => Product.fromJson(json)).toList();
-  //         isLoading = false;
-  //       });
-  //     } else {
-  //       throw Exception('Failed to load products');
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     print.i("Error fetching products: $e");
-  //   }
-  // }
 
   // ignore: unused_element
   Future<void> _logout(BuildContext context) async {
