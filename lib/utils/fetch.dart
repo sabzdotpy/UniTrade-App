@@ -11,23 +11,29 @@ import 'package:http_parser/http_parser.dart';
 import './image_uploader.dart';
 
 Future< Map<String, dynamic>> fetchData() async {
-  print("..");
-  String? url = dotenv.env['SERVER_URL'];
+  try {
+    print("..");
+    String? url = dotenv.env['SERVER_URL'];
 
-  print("Sending requests to: $url/get-products");
+    print("Sending requests to: $url/get-products");
 
-  final response = await http.get(Uri.parse('$url/get-products'));
-  Map<String, dynamic> res = jsonDecode(response.body);
-  print("Received response from server.");
-  print(res);
-  if (response.statusCode == 200) {
-    print("Successful response while fetching products.");
-    // If the server returns a successful response, parse the JSON data
-    return res;
-  } else {
-    print("Errored response while fetching products.");
-    // If the server response is not successful, throw an error
-    throw Exception('Failed to load data');
+    final response = await http.get(Uri.parse('$url/get-products'));
+    Map<String, dynamic> res = jsonDecode(response.body);
+    print("Received response from server.");
+    print(res);
+    if (response.statusCode == 200) {
+      print("Successful response while fetching products.");
+      // If the server returns a successful response, parse the JSON data
+      return res;
+    } else {
+      print("Errored response while fetching products.");
+      // If the server response is not successful, throw an error
+      throw Exception('Failed to load data');
+    }
+  }
+  catch (e) {
+    print("Exception caught while fetching products: $e");
+    return { "code": "ERROR", "message": e.toString() };
   }
 }
 

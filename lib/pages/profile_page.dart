@@ -26,14 +26,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<BuyPageProduct> products = [];
   bool isLoading = true;
-  User? user = FirebaseAuth.instance.currentUser;
+  User? user;
 
-  String? getName() => user!.displayName;
-  String? getEmail() => user!.email;
+  String? getName() => user?.displayName;
+  String? getEmail() => user?.email;
 
   @override
   void initState() {
     super.initState();
+    user = FirebaseAuth.instance.currentUser;
     getUsersProducts();
   }
 
@@ -43,7 +44,14 @@ class _ProfilePageState extends State<ProfilePage> {
         isLoading = true;
       });
       print.w("Getting products by user.");
-      if (user!.email != null) {
+      if (user?.email == null) {
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+      if (user?.email != null) {
         List<dynamic> res = await fetchProductsByUser(user?.email ?? "fake@mail.com");
         List<BuyPageProduct> parsedProducts = [];
 
@@ -103,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
   //   }
   // }
 
+  // ignore: unused_element
   Future<void> _logout(BuildContext context) async {
     GoogleSignInProvider  googleSignInProvider = GoogleSignInProvider();
 

@@ -26,22 +26,25 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("appPreferences");
   
+  print("Fuck my life and initialize Firebase.");
   await initializeFirebase();
 
   runApp(const MyApp());
 }
 
 Future<void> initializeFirebase() async {
+
+  final Logger print = Logger();
+
   if (Firebase.apps.isNotEmpty) {
-    print("Firebase is already initialized.");
+    print.i("Firebase is already initialized.");
     return;
   }
 
   await Firebase.initializeApp(
-    name: "unitrade",
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print("Firebase initialized successfully.");
+  print.i("Firebase initialized successfully.");
 }
 
 class MyApp extends StatelessWidget {
@@ -88,6 +91,11 @@ class _AppInitializerState extends State<AppInitializer> {
   @override
   void initState() {
     super.initState();
+
+    Firebase.initializeApp().whenComplete(() { 
+      print.i("completed firebase init.");
+      setState(() {});
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkLaunchState();

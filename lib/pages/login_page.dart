@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     late String collegeName;
     late String mail;
 
-    final double _signInButtonHeight = 60;
+    // final double _signInButtonHeight = 60;
 
     final GoogleSignInProvider _googleSignInProvider = GoogleSignInProvider();
     final Logger print =  Logger(printer: PrettyPrinter());

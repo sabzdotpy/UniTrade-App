@@ -15,10 +15,7 @@ class ChooseCollegePage extends StatefulWidget {
 
 class _ChooseCollegePageState extends State<ChooseCollegePage> {
 
-  final GoogleSignInProvider _googleSignInProvider = GoogleSignInProvider();
   final Logger print =  Logger(printer: PrettyPrinter());
-
-  
 
   final Map<String, String> collegeAndMails = {
     "Kalasalingam Academy of Research and Education" : "klu.ac.in",

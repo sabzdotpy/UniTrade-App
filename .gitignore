@@ -122,3 +122,6 @@ private_keystore
 private_keystore/*
 *.hprof
 *.apk
+
+google-services.json
+*/google-services.json

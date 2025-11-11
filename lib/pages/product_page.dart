@@ -27,7 +27,15 @@ class _ProductPageState extends State<ProductPage> {
       {"price": 1200, "quantity": 3, "postedAt": DateTime.now().subtract(const Duration(days: 10)), "negotiable": false},
     ];
 
-    User? user = FirebaseAuth.instance.currentUser;
+    User? user;
+
+    @override
+    void initState() {
+      super.initState();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        user = FirebaseAuth.instance.currentUser;
+      });
+    }
 
     String toTitleCase(String input) {
       return input.split(' ').map((word) {
@@ -149,8 +157,10 @@ class _ProductPageState extends State<ProductPage> {
                                       radius: 18,
                                       backgroundColor: const Color.fromARGB(255, 89, 89, 89), 
                                       backgroundImage: CachedNetworkImageProvider(
-                                        user!.photoURL 
-                                        ?? "https://thumbs.dreamstime.com/t/creative-vector-illustration-default-avatar-profile-placeholder-isolated-background-art-design-grey-photo-blank-template-mo-118823351.jpg"),
+                                        (user != null) ? user!.photoURL 
+                                        ?? "https://thumbs.dreamstime.com/t/creative-vector-illustration-default-avatar-profile-placeholder-isolated-background-art-design-grey-photo-blank-template-mo-118823351.jpg"
+                                        : "https://thumbs.dreamstime.com/t/creative-vector-illustration-default-avatar-profile-placeholder-isolated-background-art-design-grey-photo-blank-template-mo-118823351.jpg"
+                                        ),
                                     ),
                                     Text(widget.product.posterName, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, ),),
                                     Container(

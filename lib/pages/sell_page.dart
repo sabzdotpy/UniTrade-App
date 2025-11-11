@@ -83,7 +83,10 @@ class _SellPageState extends State<SellPage> {
     super.initState();
     print.i("Buy Page Initialized.");
     fetchAllProducts();
-    User? user = FirebaseAuth.instance.currentUser;
+    
+    // wait for firebase init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      User? user = FirebaseAuth.instance.currentUser;
       if (user?.email != null) {
         setState(() {
           userEmail = user!.email!;
@@ -91,6 +94,7 @@ class _SellPageState extends State<SellPage> {
       } else {
         print.e("User is not found, and we are already in sell page.");
       }
+    });
   }
 
   Future<void> _pickImages() async {

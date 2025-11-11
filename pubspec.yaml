@@ -95,7 +95,6 @@ flutter:
 
   assets:
       - assets/images/
-      - assets/vectors/
       - .env.dev
       - .env.prod
 

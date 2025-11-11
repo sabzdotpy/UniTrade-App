@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class GoogleSignInProvider {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  FirebaseAuth get _auth => FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   final Logger print = Logger(printer: PrettyPrinter());
