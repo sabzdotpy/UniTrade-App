@@ -55,7 +55,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _startAutoRefresh() {
-    _refreshTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 6), (timer) {
       if (chatId != null && mounted) {
         _refreshMessages();
       }
