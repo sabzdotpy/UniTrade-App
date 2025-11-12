@@ -51,6 +51,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             rating: product['rating'] ?? 4.0,  
             productImages: product['productImages'] ?? "https://www.google.com",
             posterName: product['posterName'] ?? "Anonymous",
+            posterEmail: product['posterEmail'] ?? "Anonymous",
             id: product['_id'] ?? "TEST_ID",
           )
         );

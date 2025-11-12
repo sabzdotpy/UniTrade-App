@@ -67,7 +67,9 @@ class _ProfilePageState extends State<ProfilePage> {
               rating: product['rating'],
               productImages: product['productImages'],
               posterName: product['posterName'],
+              posterEmail: product['posterEmail'],
               id: product['_id']
+
             )
           );
         },);

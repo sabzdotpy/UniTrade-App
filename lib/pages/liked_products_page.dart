@@ -83,6 +83,7 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
             rating: json['rating'] ?? 0.0,
             contact: json['contact'] ?? '',
             posterName: json['posterName'] ?? '',
+            posterEmail: json['posterEmail'] ?? '',
             productImages: json['productImages'] ?? [],
           )).toList();
           
@@ -143,6 +144,7 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
             rating: json['rating'] ?? 0.0,
             contact: json['contact'] ?? '',
             posterName: json['posterName'] ?? '',
+            posterEmail: json['posterEmail'] ?? '',
             productImages: json['productImages'] ?? [],
           )).toList());
           

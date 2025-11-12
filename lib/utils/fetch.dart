@@ -41,14 +41,14 @@ Future<List> fetchProductsByUser(String email) async {
   print("Sending requests to: $url/get-products-by-user");
 
   final response = await http.get(Uri.parse('$url/get-products-by-user?email=$email'));
-  List<dynamic> res = jsonDecode(response.body);
+  Map<String, dynamic> res = jsonDecode(response.body);
   print("Received products by user from server.");
   print(res);
 
   if (response.statusCode == 200) {
     print("Successful response while fetching products.");
     // If the server returns a successful response, parse the JSON data
-    return res;
+    return res["products"] ?? [];
   } else {
     print("Errored response while fetching products.");
     // If the server response is not successful, throw an error
@@ -87,6 +87,8 @@ Future< Map<String, dynamic>> postProduct(
       'posterEmail': posterEmail,
       'productImages': imageURLs,
     };
+
+    print("Request Body: $requestBody");
 
     print("Storing post in database");
     // Make the POST request

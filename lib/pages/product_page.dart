@@ -136,7 +136,6 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
           throw Exception('User not authenticated');
         }
 
-        final token = await user.getIdToken();
         final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
         
         http.Response response;
@@ -198,7 +197,8 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
           builder: (context) => ChatPage(
             sellerName: widget.product.posterName,
             sellerProfilePic: user?.photoURL ?? "https://thumbs.dreamstime.com/t/creative-vector-illustration-default-avatar-profile-placeholder-isolated-background-art-design-grey-photo-blank-template-mo-118823351.jpg",
-            sellerId: widget.product.id, // using product id for now, will need seller id later
+            sellerEmail: widget.product.posterEmail,
+            productId: widget.product.id,
           ),
         ),
       );

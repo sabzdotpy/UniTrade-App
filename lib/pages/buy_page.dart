@@ -72,6 +72,7 @@ class _BuyPageState extends State<BuyPage> {
               rating: product['rating'] ?? 4.0,  
               productImages: product['productImages'] ?? "https://www.google.com",
               posterName: product['posterName'] ?? "Anonymous",
+              posterEmail: product['posterEmail'] ?? "",
               id: product['_id'] ?? "TEST_ID",
             )
           );
@@ -91,8 +92,9 @@ class _BuyPageState extends State<BuyPage> {
           refreshingAllProducts = false;
         });
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
       print.i('Error: $e');
+      print.i('Stack trace: $stackTrace');
       setState(() {
         refreshingAllProducts = false;
         if (e.toString() == "Connection timed out") {
@@ -674,6 +676,7 @@ class BuyPageProduct {
   final num price;
   final String contact;
   final String posterName;
+  final String posterEmail;
   final String postedAt;
   final String id;
 
@@ -686,6 +689,7 @@ class BuyPageProduct {
     required num rating,
     required this.contact,
     required this.posterName,
+    required this.posterEmail,
     required this.productImages,
     required this.id,
   }) : rating = rating.toDouble();

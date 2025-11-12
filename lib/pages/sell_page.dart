@@ -679,6 +679,7 @@ class _SellPageState extends State<SellPage> {
                                   rating: product['rating'], 
                                   posterName: product['posterName'], 
                                   productImages: product['productImages'], 
+                                  posterEmail: product['posterEmail'],
                                   id: product['_id']
                                 ), 
                               )
