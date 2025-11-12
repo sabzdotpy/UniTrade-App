@@ -220,9 +220,26 @@ class _ChatPageState extends State<ChatPage> {
     final messageText = _messageController.text.trim();
     _messageController.clear();
     
+    // create optimistic message
+    final optimisticMessage = ChatMessage(
+      id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
+      text: messageText,
+      productId: widget.productId,
+      isDeleted: false,
+      sentBy: currentUserEmail ?? currentUserId ?? '',
+      sentFor: widget.sellerEmail,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    
+    // optimistically add message to UI
     setState(() {
+      messages.insert(0, optimisticMessage);
       isSending = true;
     });
+    
+    // scroll to show new message
+    _scrollToBottom();
 
     try {
       final result = await _chatService.sendMessage(
@@ -237,9 +254,14 @@ class _ChatPageState extends State<ChatPage> {
           chatId = result['chatId'];
         }
         
-        // reload messages
+        // reload messages to get the real message from server
         await _loadMessages();
       } else {
+        // remove optimistic message on failure
+        setState(() {
+          messages.removeWhere((m) => m.id == optimisticMessage.id);
+        });
+        
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('failed to send: ${result['message']}')),
@@ -250,6 +272,12 @@ class _ChatPageState extends State<ChatPage> {
       print("Error sending message");
       print("Error: $e");
       print("Stack trace: $stackTrace");
+      
+      // remove optimistic message on error
+      setState(() {
+        messages.removeWhere((m) => m.id == optimisticMessage.id);
+      });
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -357,19 +385,20 @@ class _ChatPageState extends State<ChatPage> {
                 child: ListView.builder(
                   controller: _scrollController,
                   reverse: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
                     // compare by both email and id since backend might return either
                     final isSelf = message.sentBy == currentUserEmail || 
                                    message.sentBy == currentUserId;
+                    final isOptimistic = message.id.startsWith('temp_');
                     
                     if (message.isDeleted) {
                       return Align(
                         alignment: isSelf ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
-                          margin: const EdgeInsets.only(bottom: 12),
+                          margin: const EdgeInsets.only(bottom: 8),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.7,
@@ -390,27 +419,61 @@ class _ChatPageState extends State<ChatPage> {
                       );
                     }
                     
-                    return Align(
-                      alignment: isSelf ? Alignment.centerRight : Alignment.centerLeft,
-                      child: GestureDetector(
-                        onLongPress: isSelf ? () => _showDeleteDialog(message.id) : null,
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    return TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      builder: (context, value, child) {
+                        return Transform.translate(
+                          offset: Offset(0, (1 - value) * 50),
+                          child: Opacity(
+                            opacity: value,
+                            child: child,
                           ),
-                          decoration: BoxDecoration(
-                            color: isSelf 
-                              ? const Color.fromARGB(255, 0, 122, 255)
-                              : const Color.fromARGB(255, 50, 50, 50),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            message.text ?? '',
-                            style: TextStyle(
-                              color: isSelf ? Colors.white : Colors.white.withOpacity(0.95),
-                              fontSize: 15,
+                        );
+                      },
+                      child: Align(
+                        alignment: isSelf ? Alignment.centerRight : Alignment.centerLeft,
+                        child: GestureDetector(
+                          onLongPress: isSelf && !isOptimistic ? () => _showDeleteDialog(message.id) : null,
+                          child: Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            constraints: BoxConstraints(
+                              maxWidth: MediaQuery.of(context).size.width * 0.7,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelf 
+                                ? (isOptimistic 
+                                    ? const Color.fromARGB(255, 0, 122, 255).withOpacity(0.7)
+                                    : const Color.fromARGB(255, 0, 122, 255))
+                                : const Color.fromARGB(255, 50, 50, 50),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    message.text ?? '',
+                                    style: TextStyle(
+                                      color: isSelf ? Colors.white : Colors.white.withOpacity(0.95),
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                if (isOptimistic) ...[
+                                  const SizedBox(width: 8),
+                                  const SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CupertinoActivityIndicator(
+                                      color: Colors.white,
+                                      radius: 6,
+                                    ),
+                                  ),
+                                ],
+                              ],
                             ),
                           ),
                         ),
