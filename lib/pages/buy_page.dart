@@ -53,11 +53,12 @@ class _BuyPageState extends State<BuyPage> {
         refreshingAllProducts = true;
       });
       
-      Map<String, dynamic> data = await fetchData();
+      print.w("Fetching all products from server...");
+      List<dynamic> data = await fetchData();
       setState(() {
         status = "";
         allBuyPageItems.clear();
-        List all = data['products'];
+        List all = data;
 
         for (var product in all) {
           allBuyPageItems.add(

@@ -7,17 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import './image_uploader.dart';
 
-Future< Map<String, dynamic>> fetchData() async {
+Future<List<dynamic>> fetchData() async {
   try {
-    print("..");
     String? url = dotenv.env['SERVER_URL'];
-    print("------------------------------------------");
-    print(url);
-    print("------------------------------------------");
-
-  
     print("Sending requests to: $url/get-products");
 
+    print("💝💝💝💝💝");
     final response = await http.get(Uri.parse('$url/get-products'));
     Map<String, dynamic> res = jsonDecode(response.body);
     print("Received response from server.");
@@ -34,7 +29,7 @@ Future< Map<String, dynamic>> fetchData() async {
   }
   catch (e) {
     print("Exception caught while fetching products: $e");
-    return { "code": "ERROR", "message": e.toString() };
+    return [];
   }
 }
 
@@ -150,36 +145,25 @@ Future<Map> loginOrSignup (String uid, String email, String name) async {
 }
 
 
-Future<Map> fetchNotifications () async {
+Future<List> fetchNotifications (String email) async {
   Logger print = Logger(printer: PrettyPrinter());
 
   String? url = dotenv.env['SERVER_URL'];
-  final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception('User not authenticated');
-      }
-  final token = await user.getIdToken();
-
-  print.i("Token: $token");
 
   final response = await http.get(
-    Uri.parse('$url/notifications'),
+    Uri.parse('$url/notifications?email=$email'),
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token ?? '',
+      'Content-Type': 'application/json'
     },
   ).timeout(const Duration(seconds: 10));
 
-
-  print.i("Response Status Code: ${response.statusCode}");
-  print.i("Notifications Body: ${response.body}");
-
   if (response.statusCode == 200) {
     print.i('Fetched notifications successfully: ${response.body}');
-    return json.decode(response.body);
+    Map<String, dynamic> data = json.decode(response.body);
+    return data["notifications"] ?? [];
   } else {
     print.w('Fetching notifications failed: ${response.statusCode} - ${response.body}');
-    return { "code": "FAILURE", "message": response.body };
+    return [];
 
   }
 }

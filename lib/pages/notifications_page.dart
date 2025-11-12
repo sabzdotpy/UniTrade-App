@@ -1,6 +1,8 @@
 import "package:cached_network_image/cached_network_image.dart";
 import "package:flutter/cupertino.dart";
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import "buy_page.dart";
 import "../utils/fetch.dart";
 
@@ -16,22 +18,26 @@ class _NotificationsPageState extends State<NotificationsPage> {
   var products = <BuyPageProduct>[];
   String status = "Loading...";
 
+  User? user;
+
   @override
   void initState() {
     super.initState();
     print("Notifications Page Initialized");
     getNotifications();
+
+    user = FirebaseAuth.instance.currentUser;
   }
 
   void getNotifications() async {
-    Map<dynamic, dynamic> data = await fetchNotifications();
+    List data = await fetchNotifications(user?.email ?? "");
     print("Fetched notifications data: $data");
     print("============================================");
 
     setState(() {
       status = "";
       products.clear();
-      List all = data['notifications'];
+      List all = data;
 
       for (var product in all) {
         products.add(
@@ -124,16 +130,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CupertinoActivityIndicator(),
-                  SizedBox(height: 20,),
+                  const CupertinoActivityIndicator(),
+                  const SizedBox(height: 20,),
                   GestureDetector(
                     onTap: () {
                       getNotifications();
                       print("Refreshing notifications.");
                     },
-                    child: Text("No Notifications", style: TextStyle( fontSize: 30, fontWeight: FontWeight.w900),)),
-                  SizedBox(height: 20,),
-                  Text("You have no notifications yet.", style: TextStyle( fontSize: 20, fontWeight: FontWeight.w500),),
+                    child: const Text("No Notifications", style: TextStyle( fontSize: 30, fontWeight: FontWeight.w900),)),
+                  const SizedBox(height: 20,),
+                  const Text("You have no notifications yet.", style: TextStyle( fontSize: 20, fontWeight: FontWeight.w500),),
                 ],
               ),
             )
