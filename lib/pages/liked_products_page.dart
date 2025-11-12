@@ -59,20 +59,18 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
         throw Exception('User not authenticated');
       }
 
-      final token = await user.getIdToken();
       final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
-      print(Uri.parse('$serverUrl/liked-products?page=$currentPage&limit=20'));
+      print(Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=20'));
       final response = await http.get(
-        Uri.parse('$serverUrl/liked-products?page=$currentPage&limit=20'),
+        Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=20'),
         headers: {
-          'Authorization': token ?? '',
           'Content-Type': 'application/json',
         },
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final List<dynamic> productsJson = data['products'] ?? [];
+        final List<dynamic> productsJson = data['data'] ?? [];
         
         setState(() {
           likedProducts = productsJson.map((json) => BuyPageProduct(
@@ -117,21 +115,22 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
 
-      final token = await user.getIdToken();
       final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
       final nextPage = currentPage + 1;
       
       final response = await http.get(
-        Uri.parse('$serverUrl/liked-products?page=$nextPage&limit=20'),
+        Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$nextPage&limit=20'),
         headers: {
-          'Authorization': token ?? '',
           'Content-Type': 'application/json',
         },
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final List<dynamic> productsJson = data['products'] ?? [];
+        print("~~~~~~~~~~~~~~~~~~~~~~~~ 🟢🟢🟢🟢 ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        print(data);
+        print("~~~~~~~~~~~~~~~~~~~~~~~~ 🟢🟢🟢🟢 ~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        final List<dynamic> productsJson = data['data'] ?? [];
         
         setState(() {
           likedProducts.addAll(productsJson.map((json) => BuyPageProduct(
@@ -170,18 +169,13 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) return;
 
-      final token = await user.getIdToken();
       final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
       
       final response = await http.delete(
-        Uri.parse('$serverUrl/liked-products/unlike/$productId'),
-        headers: {
-          'Authorization': token ?? '',
-        },
+        Uri.parse('$serverUrl/liked-products/unlike/$productId?email=${user.email}'),
       );
 
       if (response.statusCode != 200) {
-        // Revert on failure
         setState(() {
           likedProducts.insert(index, removedProduct);
         });

@@ -75,15 +75,9 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) return;
 
-        final token = await user.getIdToken();
         final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
-        
-        final response = await http.get(
-          Uri.parse('$serverUrl/liked-products/check/${widget.product.id}'),
-          headers: {
-            'Authorization': token ?? '',
-          },
-        );
+
+        final response = await http.get(Uri.parse('$serverUrl/liked-products/check/${widget.product.id}?email=${user.email}'));
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
@@ -150,9 +144,8 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
         if (isLiked) {
           // Like the product
           response = await http.post(
-            Uri.parse('$serverUrl/liked-products/like'),
+            Uri.parse('$serverUrl/liked-products/like?email=${user.email}'),
             headers: {
-              'Authorization': token ?? '',
               'Content-Type': 'application/json',
             },
             body: jsonEncode({'productId': widget.product.id}),
@@ -160,9 +153,9 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
         } else {
           // Unlike the product
           response = await http.delete(
-            Uri.parse('$serverUrl/liked-products/unlike/${widget.product.id}'),
+            Uri.parse('$serverUrl/liked-products/unlike/${widget.product.id}?email=${user.email}'),
             headers: {
-              'Authorization': token ?? '',
+              'Content-Type': 'application/json',
             },
           );
         }
