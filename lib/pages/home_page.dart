@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:test_flutter/pages/buy_page.dart';
+import 'package:test_flutter/pages/chat_inbox_page.dart';
 import 'package:test_flutter/pages/choose_college_page.dart';
 import 'package:test_flutter/pages/liked_products_page.dart';
 import 'package:test_flutter/pages/notifications_page.dart';
@@ -57,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: const Icon(Icons.favorite_border),
                 onPressed: () {
+                  print("Navigating to Liked Products Page");
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const LikedProductsPage()),
@@ -66,7 +68,11 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 icon: const Icon(Icons.message),
                 onPressed: () {
-                  // Implement search functionality
+                  print("Navigating to Chat Inbox Page");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ChatInboxPage()),
+                  );
                 },
               ),
             ],

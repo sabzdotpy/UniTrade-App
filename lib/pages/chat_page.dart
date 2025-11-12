@@ -178,6 +178,10 @@ class _ChatPageState extends State<ChatPage> {
             .map((m) => ChatMessage.fromJson(m))
             .toList();
         
+        // remove optimistic messages before updating with server data
+        final serverMessageIds = fetchedMessages.map((m) => m.id).toSet();
+        messages.removeWhere((m) => m.id.startsWith('temp_') && !serverMessageIds.contains(m.id));
+        
         setState(() {
           messages = fetchedMessages.reversed.toList();
         });
@@ -188,9 +192,11 @@ class _ChatPageState extends State<ChatPage> {
       print("Stack trace: $stackTrace");
       // silent fail for auto refresh
     } finally {
-      setState(() {
-        isRefreshing = false;
-      });
+      if (mounted) {
+        setState(() {
+          isRefreshing = false;
+        });
+      }
     }
   }
 
@@ -320,17 +326,30 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
         actions: [
-          if (isRefreshing)
-            const Padding(
-              padding: EdgeInsets.only(right: 8.0),
+          AnimatedOpacity(
+            opacity: isRefreshing ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12.0),
               child: Center(
-                child: SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CupertinoActivityIndicator(),
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 0, 122, 255),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color.fromARGB(255, 0, 122, 255).withOpacity(0.6),
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
+          ),
           IconButton(
             icon: const Icon(Icons.flag_outlined, size: 22),
             onPressed: () {

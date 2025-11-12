@@ -60,9 +60,9 @@ class _LikedProductsPageState extends State<LikedProductsPage> {
       }
 
       final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';
-      print(Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=20'));
+      print(Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=19'));
       final response = await http.get(
-        Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=20'),
+        Uri.parse('$serverUrl/liked-products?email=${user.email}&page=$currentPage&limit=19'),
         headers: {
           'Content-Type': 'application/json',
         },
