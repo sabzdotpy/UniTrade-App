@@ -144,7 +144,7 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'messages',
+          'Inbox',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         actions: [

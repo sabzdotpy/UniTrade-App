@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test_flutter/utils/chat_service.dart';
 import 'package:test_flutter/utils/chat.dart';
 import 'package:test_flutter/utils/chat_message.dart';
+import 'package:test_flutter/pages/product_page.dart';
+import 'package:test_flutter/pages/buy_page.dart';
 
 class ChatPage extends StatefulWidget {
   final String sellerName;
@@ -51,6 +53,12 @@ class _ChatPageState extends State<ChatPage> {
     currentUserEmail = user?.email;
     currentUserId = user?.uid;
     await _loadOrCreateChat();
+    
+    // if opened from product page and no messages exist, send initial wave
+    if (widget.productId != null && messages.isEmpty && chatId == null) {
+      await _sendInitialMessage();
+    }
+    
     _startAutoRefresh();
   }
 
@@ -210,6 +218,32 @@ class _ChatPageState extends State<ChatPage> {
         );
       }
     });
+  }
+
+  Future<void> _sendInitialMessage() async {
+    print("Sending initial wave message to seller");
+    try {
+      final result = await _chatService.sendMessage(
+        toEmail: widget.sellerEmail,
+        text: '👋',
+        productId: widget.productId,
+      );
+
+      if (result['success']) {
+        // set chat id if this created new chat
+        if (chatId == null && result['chatId'] != null) {
+          chatId = result['chatId'];
+        }
+        
+        // load messages to show the initial wave
+        await _loadMessages();
+      }
+    } catch (e, stackTrace) {
+      print("error sending initial message");
+      print("error: $e");
+      print("stack trace: $stackTrace");
+      // silently fail, user can still send messages manually
+    }
   }
 
   @override
@@ -455,45 +489,224 @@ class _ChatPageState extends State<ChatPage> {
                         alignment: isSelf ? Alignment.centerRight : Alignment.centerLeft,
                         child: GestureDetector(
                           onLongPress: isSelf && !isOptimistic ? () => _showDeleteDialog(message.id) : null,
-                          child: Container(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            constraints: BoxConstraints(
-                              maxWidth: MediaQuery.of(context).size.width * 0.7,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelf 
-                                ? (isOptimistic 
-                                    ? const Color.fromARGB(255, 0, 122, 255).withOpacity(0.7)
-                                    : const Color.fromARGB(255, 0, 122, 255))
-                                : const Color.fromARGB(255, 50, 50, 50),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    message.text ?? '',
-                                    style: TextStyle(
-                                      color: isSelf ? Colors.white : Colors.white.withOpacity(0.95),
-                                      fontSize: 15,
-                                    ),
+                          child: Column(
+                            crossAxisAlignment: isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                            children: [
+                              // product preview if product id exists
+                              if (message.productId != null && message.productId!.isNotEmpty)
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 4),
+                                  padding: const EdgeInsets.all(8),
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(255, 60, 60, 60),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.shopping_bag,
+                                            size: 14,
+                                            color: Color.fromARGB(255, 150, 150, 150),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'product',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.grey[500],
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 8),
+                                      // product image with title overlay
+                                      if (message.product != null && message.product!.productImages.isNotEmpty)
+                                        GestureDetector(
+                                          onTap: () {
+                                            // navigate to product page
+                                            final product = BuyPageProduct(
+                                              title: message.product!.title,
+                                              description: message.product!.description,
+                                              category: message.product!.category,
+                                              price: message.product!.price,
+                                              postedAt: '', // not available in preview
+                                              rating: 0.0, // not available in preview
+                                              contact: '',
+                                              posterName: '',
+                                              posterEmail: '',
+                                              productImages: message.product!.productImages,
+                                              id: message.product!.id,
+                                            );
+                                            
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ProductPage(product: product),
+                                              ),
+                                            );
+                                          },
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 250,
+                                              foregroundDecoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(12),
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    Colors.transparent,
+                                                    Color.fromRGBO(0, 0, 0, 0.9),
+                                                  ],
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                  stops: [0.4, 1.0],
+                                                ),
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  CachedNetworkImage(
+                                                    imageUrl: message.product!.productImages[0],
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                    fit: BoxFit.cover,
+                                                    placeholder: (context, url) => Container(
+                                                      color: const Color.fromARGB(255, 45, 45, 45),
+                                                      child: const Center(
+                                                        child: CupertinoActivityIndicator(),
+                                                      ),
+                                                    ),
+                                                    errorWidget: (context, url, error) => Container(
+                                                      color: const Color.fromARGB(255, 45, 45, 45),
+                                                      child: const Center(
+                                                        child: Icon(
+                                                          Icons.image_not_supported,
+                                                          color: Colors.grey,
+                                                          size: 40,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 12,
+                                                  left: 12,
+                                                  right: 12,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        message.product!.title,
+                                                        style: const TextStyle(
+                                                          fontSize: 18,
+                                                          fontWeight: FontWeight.w700,
+                                                          color: Colors.white,
+                                                          shadows: [
+                                                            Shadow(
+                                                              color: Colors.black,
+                                                              blurRadius: 8,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        '₹${message.product!.price}',
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w600,
+                                                          color: Colors.white,
+                                                          shadows: [
+                                                            Shadow(
+                                                              color: Colors.black,
+                                                              blurRadius: 8,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      else
+                                        // fallback if product data not available
+                                        Container(
+                                          width: double.infinity,
+                                          padding: const EdgeInsets.all(16),
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(255, 45, 45, 45),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              message.productId!,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                                color: Color.fromARGB(255, 150, 150, 150),
+                                                letterSpacing: 0.5,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
-                                if (isOptimistic) ...[
-                                  const SizedBox(width: 8),
-                                  const SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: CupertinoActivityIndicator(
-                                      color: Colors.white,
-                                      radius: 6,
+                              // message bubble
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: isSelf 
+                                    ? (isOptimistic 
+                                        ? const Color.fromARGB(255, 0, 122, 255).withOpacity(0.7)
+                                        : const Color.fromARGB(255, 0, 122, 255))
+                                    : const Color.fromARGB(255, 50, 50, 50),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        message.text ?? '',
+                                        style: TextStyle(
+                                          color: isSelf ? Colors.white : Colors.white.withOpacity(0.95),
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ],
-                            ),
+                                    if (isOptimistic) ...[
+                                      const SizedBox(width: 8),
+                                      const SizedBox(
+                                        width: 12,
+                                        height: 12,
+                                        child: CupertinoActivityIndicator(
+                                          color: Colors.white,
+                                          radius: 6,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
