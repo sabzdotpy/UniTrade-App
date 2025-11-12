@@ -464,6 +464,7 @@ class BuyPageItem extends StatelessWidget {
   });
 
   final ratingColors = {
+    "5": const Color.fromARGB(255, 42, 90, 32),
     "4": const Color.fromARGB(255, 0, 93, 19),
     "3": const Color.fromARGB(255, 94, 85, 5),
     "2": const Color.fromARGB(255, 134, 74, 18),
@@ -621,7 +622,7 @@ class BuyPageItem extends StatelessWidget {
                           Text(
                             product.rating.toString(),
                             style: const TextStyle(
-                              fontSize: 10,
+                              fontSize: 12,
                             ),
                           ),
                         ]),
@@ -634,7 +635,7 @@ class BuyPageItem extends StatelessWidget {
                     child: Text(
                       product.description,
                       style: const TextStyle(
-                        fontSize: 10,
+                        fontSize: 12,
                         color: Color.fromRGBO(255, 155, 0, 1),
                       ),
                       overflow: TextOverflow.ellipsis,

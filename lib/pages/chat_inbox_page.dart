@@ -116,13 +116,27 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
   }
 
   String _getOtherParticipant(List<String> participants) {
-    // find the participant that is not the current user
+    // find participant email that is not current user
     for (var participant in participants) {
       if (participant != currentUserEmail) {
         return participant;
       }
     }
     return participants.isNotEmpty ? participants[0] : 'unknown';
+  }
+
+  Map<String, String> _getOtherParticipantDetails(Chat chat) {
+    // find the participant details that don't match current user
+    for (var details in chat.participantDetails) {
+      if (details['email'] != currentUserEmail) {
+        return details;
+      }
+    }
+    // fallback to first participant or unknown
+    if (chat.participantDetails.isNotEmpty) {
+      return chat.participantDetails[0];
+    }
+    return {'email': 'unknown', 'name': 'unknown'};
   }
 
   String _getLastMessagePreview(Chat chat) {
@@ -217,7 +231,9 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
                     ),
                     itemBuilder: (context, index) {
                       final chat = chats[index];
-                      final otherParticipant = _getOtherParticipant(chat.participants);
+                      final participantDetails = _getOtherParticipantDetails(chat);
+                      final participantName = participantDetails['name'] ?? 'unknown';
+                      final participantEmail = participantDetails['email'] ?? 'unknown';
                       final lastMessage = _getLastMessagePreview(chat);
                       final isBlocked = chat.status == 'blocked';
                       
@@ -230,8 +246,8 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
                           radius: 28,
                           backgroundColor: const Color.fromARGB(255, 89, 89, 89),
                           child: Text(
-                            otherParticipant.isNotEmpty 
-                                ? otherParticipant[0].toUpperCase()
+                            participantName.isNotEmpty 
+                                ? participantName[0].toUpperCase()
                                 : '?',
                             style: const TextStyle(
                               fontSize: 20,
@@ -243,7 +259,7 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                otherParticipant,
+                                participantName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -303,9 +319,9 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ChatPage(
-                                      sellerName: otherParticipant,
+                                      sellerName: participantName,
                                       sellerProfilePic: '', // placeholder
-                                      sellerEmail: otherParticipant,
+                                      sellerEmail: participantEmail,
                                     ),
                                   ),
                                 );
