@@ -119,51 +119,55 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 40),
-            Center(
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onDoubleTap: () async {
+            const SizedBox(height: 10),
+            Row(
+              spacing: 18,
+              children: [
+                SizedBox(width: 1),
+                GestureDetector(
+                  onDoubleTap: () async {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("Logging you out."),
+                    ));
+                    GoogleSignInProvider  googleSignInProvider = GoogleSignInProvider();
+                    try {
+                      print.i("Logging out.");
+                      await FirebaseAuth.instance.signOut();
+                      googleSignInProvider.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
+                      );
+                    } catch (e) {
+                      print.i("Error during logout: $e");
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Logging you out."),
+                        content: Text("Error logging out. Please try again."),
                       ));
-                      GoogleSignInProvider  googleSignInProvider = GoogleSignInProvider();
-                      try {
-                        print.i("Logging out.");
-                        await FirebaseAuth.instance.signOut();
-                        googleSignInProvider.signOut();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
-                        );
-                      } catch (e) {
-                        print.i("Error during logout: $e");
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Error logging out. Please try again."),
-                        ));
-                      }
-                    },
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: CachedNetworkImageProvider(
-                        user?.photoURL ?? "https://ecointelligentgrowth.net/wp-content/uploads/2020/08/user-placeholder.jpg",
-                      ),
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 70,
+                    backgroundImage: CachedNetworkImageProvider(
+                      user?.photoURL ?? "https://ecointelligentgrowth.net/wp-content/uploads/2020/08/user-placeholder.jpg",
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Text(user?.displayName ?? "No user found."),
-                  SizedBox(height: 8),
-                  Text(user?.email ?? "No email found.", style: TextStyle(color: Colors.grey),),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildReputationBox("Buyer Reputation", "5"),
-                _buildReputationBox("Seller Reputation", "5"),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      user?.displayName ?? "No user found.",
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 2),
+                    Text(user?.email ?? "No email found.", style: TextStyle(color: Colors.grey),),
+                    const SizedBox(height: 16),
+                    _buildReputationBox("Buyer Rep", "5"),
+                    const SizedBox(height: 4),
+                    _buildReputationBox("Seller Rep", "5"),
+                  ]
+                )
               ],
             ),
             const SizedBox(height: 24),
@@ -219,22 +223,33 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildReputationBox(String title, String value) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: const Color.fromRGBO(76, 175, 80, .8), width: 1),
-      ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 8),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 20, color: Colors.green),
+          Container(
+            padding: const EdgeInsets.only(left: 6, right: 12, top: 2, bottom: 2),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(76, 175, 80, .25),
+              borderRadius: BorderRadius.circular(10)        
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.star_rounded, color: Color.fromRGBO(76, 175, 80, .8), size: 14),
+                const SizedBox(width: 4),
+                Text(
+                  value,
+                  style: const TextStyle(fontSize: 14, color: Color.fromRGBO(76, 175, 80, .8)),
+                ),
+              ]
+            )
           ),
+          
         ],
       ),
     );

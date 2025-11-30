@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test_flutter/pages/buy_page.dart';
 import 'package:test_flutter/pages/product_page.dart';
+import 'package:test_flutter/pages/product_in_review_page.dart';
 import '../utils/fetch.dart';
 
 class SellPage extends StatefulWidget {
@@ -661,33 +662,36 @@ class _SellPageState extends State<SellPage> {
                             userEmail,
                             productImages
                           );
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   SnackBar(content: Text("${res['message']} - ${res['product']}")),
-                          // );
-                          var product = res['product'];
+                          // after posting, redirect to ProductInReviewPage
+                          List<String> imageUrls = [];
+                          // prefer network images if returned, else use local file paths
+                          if (res != null && res['product'] != null && res['product']['productImages'] != null && res['product']['productImages'] is List) {
+                            imageUrls = List<String>.from(res['product']['productImages'].map((img) => img.toString()));
+                          } else {
+                            imageUrls = productImages.map((x) => x.path).toList();
+                          }
+                          
+                          // clear all fields
+                          productNameController.clear();
+                          productDescController.clear();
+                          productPriceController.clear();
+                          contactController.clear();
+                          productImages.clear();
+                          selectedCategory = "IOT Components";
+                          quantity = 1;
+                          postingInProgress = false;
+
                           Navigator.push(
-                            context,  
+                            context,
                             MaterialPageRoute(
-                              builder: (context) => ProductPage( 
-                                product: BuyPageProduct(
-                                  title: product['title'], 
-                                  description: product['description'], 
-                                  category: product['category'], 
-                                  price: product['price'], 
-                                  contact: product['contact'],
-                                  postedAt: product['postedAt'], 
-                                  rating: product['rating'], 
-                                  posterName: product['posterName'], 
-                                  productImages: product['productImages'], 
-                                  posterEmail: product['posterEmail'],
-                                  id: product['_id']
-                                ), 
-                              )
-                            )
+                              builder: (context) => ProductInReviewPage(
+                                title: productNameController.text,
+                                description: productDescController.text,
+                                images: imageUrls,
+                              ),
+                            ),
                           );
-                          print.i(res);
-                        }
-                        else {
+                        } else {
                           print.i("No images found. Cannot post.");
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Add atleast one image of the product.')),
@@ -696,8 +700,7 @@ class _SellPageState extends State<SellPage> {
                         setState(() {
                           postingInProgress = false;
                         });
-                      }
-                      catch (err) {
+                      } catch (err) {
                         setState(() {
                           postingInProgress = false;
                         });

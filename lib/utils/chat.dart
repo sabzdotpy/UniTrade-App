@@ -36,7 +36,6 @@ class Chat {
           final name = (p['name'] ?? email).toString();
           details.add({'email': email, 'name': name});
           
-          // return email for participants list
           return email;
         }
         return p.toString();

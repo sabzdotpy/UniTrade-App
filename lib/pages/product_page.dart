@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:test_flutter/pages/buy_page.dart';
 import 'package:test_flutter/pages/chat_page.dart';
+import 'package:test_flutter/pages/choose_college_page.dart';
 
 class ProductPage extends StatefulWidget {
   final BuyPageProduct product;
@@ -133,7 +134,11 @@ class _ProductPageState extends State<ProductPage> with SingleTickerProviderStat
       try {
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
-          throw Exception('User not authenticated');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ChooseCollegePage()),
+          );
+          return;
         }
 
         final serverUrl = dotenv.env['SERVER_URL'] ?? 'http://localhost:6969';

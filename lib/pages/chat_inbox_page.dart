@@ -144,7 +144,6 @@ class _ChatInboxPageState extends State<ChatInboxPage> {
       return 'no messages yet';
     }
     // since messages are IDs, we can't show preview
-    // in real app you'd need to fetch message details or include text in chat object
     return 'tap to view messages';
   }
 

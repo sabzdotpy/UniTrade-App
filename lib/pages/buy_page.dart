@@ -403,7 +403,6 @@ class _BuyPageState extends State<BuyPage> {
                               ),
                             ),
                             child: (!refreshingAllProducts) ? const Text("Refresh") : const CupertinoActivityIndicator()
-                            //  Text( !refreshingAllProducts ? "Refresh" : "Loading"),
                           ),
                         ),
                       ],
