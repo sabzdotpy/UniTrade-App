@@ -1,7 +1,7 @@
 ![really cool UniTrade cover image](https://raw.githubusercontent.com/sabzdotpy/UniTrade-App/refs/heads/main/assets/mockups/GH%20Cover.png)
 # UniTrade
 
-UniTrade is a centralized marketplace tailored for university students, offering affordable, high-quality electronic components while fostering a trusted and accountable community. By restricting access to verified university members, UniTrade ensures a secure environment for peer-to-peer transactions, minimizing delays and enhancing efficiency. Beyond its commercial role, UniTrade promotes sustainability, innovation, and collaboration within the academic ecosystem.
+UniTrade is a centralized marketplace tailored for university students, offering affordable items while fostering a trusted and accountable community. By restricting access to verified university members, UniTrade ensures a secure environment for peer-to-peer transactions, minimizing delays and enhancing efficiency. Beyond its commercial role, UniTrade promotes sustainability, innovation, and collaboration within the academic ecosystem.
 
 ## ✨ Key Features
 - **Affordable Components**: Access to new and second-hand campus essentials and everything a student needs at a price a student can afford.
