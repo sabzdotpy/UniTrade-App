@@ -1,18 +1,18 @@
-![alt](./assets/icons/apple-76x76.png)
+![really cool UniTrade cover image](https://raw.githubusercontent.com/sabzdotpy/UniTrade-App/refs/heads/main/assets/mockups/GH%20Cover.png)
 # UniTrade
 
 UniTrade is a centralized marketplace tailored for university students, offering affordable, high-quality electronic components while fostering a trusted and accountable community. By restricting access to verified university members, UniTrade ensures a secure environment for peer-to-peer transactions, minimizing delays and enhancing efficiency. Beyond its commercial role, UniTrade promotes sustainability, innovation, and collaboration within the academic ecosystem.
 
-## Key Features
-- **Affordable Components**: Access to high-quality electronic components at student-friendly prices.
+## ✨ Key Features
+- **Affordable Components**: Access to new and second-hand campus essentials and everything a student needs at a price a student can afford.
 - **Trusted Community**: Restricted to verified university members for secure transactions.
 - **Efficient Transactions**: Peer-to-peer exchanges to minimize delays.
 - **Sustainability**: Encourages reuse of underutilized resources.
 - **Collaboration**: Connects like-minded individuals for projects and innovation.
 
-## Folder Structure
+## 🌴 Folder Structure
 ```
-UniTrade Backup/
+UniTrade/
 ├── android/                # Android-specific files
 ├── assets/                 # Icons, images, and mockups
 ├── build/                  # Generated build files
@@ -34,14 +34,14 @@ UniTrade Backup/
 └── README.md               # Project documentation
 ```
 
-## Development Notes
+## ❗ Development Notes
 - **Flutter SDK**: Ensure Flutter SDK is installed and configured.
 - **Dependencies**: Run `flutter pub get` to install dependencies.
 - **Firebase Setup**: Add your Firebase configuration files (`google-services.json` for Android, `GoogleService-Info.plist` for iOS).
 - **Environment Variables**: Use `flutter_dotenv` for managing environment variables.
 - **Testing**: Use the `test` directory for widget and unit tests.
 
-## Getting Started
+## 🔨 Getting Started
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -59,5 +59,5 @@ UniTrade Backup/
    flutter run
    ```
 
-## Contribution
+## 🤝 Contribution
 Contributions are welcome! Please fork the repository and submit a pull request for review.
